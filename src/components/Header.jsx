@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Link } from "react-router-dom";
+
 const Header = () => {
   return (
     <header style={styles.header}>
@@ -10,15 +12,15 @@ const Header = () => {
 
       {/* Centered navigation links */}
       <nav style={styles.navCenter}>
-        <a href="/" style={styles.link}>Home</a>
-        <a href="/services" style={styles.link}>Services</a>
-        <a href="/contact" style={styles.link}>Contact</a>
+        <Link to="/" style={styles.link}>Home</Link>
+        <Link to="/services" style={styles.link}>Services</Link>
+        <Link to="/contact" style={styles.link}>Contact</Link>
       </nav>
 
       {/* Right-aligned Register and Login (highlighted) */}
       <nav style={styles.navRight}>
-        <a href="/register" style={styles.highlightedLink}>Register</a>
-        <a href="/login" style={styles.highlightedLink}>Login</a>
+        <Link to="/register" style={styles.highlightedLink}>Register</Link>
+        <Link to="/login" style={styles.highlightedLink}>Login</Link>
       </nav>
     </header>
   );
