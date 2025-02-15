@@ -13,7 +13,7 @@ const Header = () => {
       {/* Centered navigation links */}
       <nav style={styles.navCenter}>
         <Link to="/" style={styles.link}>Home</Link>
-        <Link to="/services" style={styles.link}>Services</Link>
+        <Link to="/services" style={styles.link}>Services Provided</Link>
         <Link to="/contact" style={styles.link}>Contact</Link>
       </nav>
 
