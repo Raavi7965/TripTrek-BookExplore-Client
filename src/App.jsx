@@ -1,19 +1,28 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import Login from "./pages/Login";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
-import Index from "./pages/Index";
+// import Index from "./pages/Index";
+import Login from "./pages/Login";
+import IndexPage from "./pages/Index";
+import Registration from "./pages/Registration";
+import Footer from './components/Footer'
+
+import './App.css';
+
+//Registration
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (  
-    <>
-      <Header/>
-      <Index/>     
-    </>
+    <BrowserRouter>
+      <Header />
+      <div className="routes-container">
+        <Routes>
+          <Route path="/register" element={<Registration />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<IndexPage />} />
+        </Routes>
+      </div>
+      <Footer/>
+    </BrowserRouter>
   );
 }
 
