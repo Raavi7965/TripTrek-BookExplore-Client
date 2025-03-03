@@ -272,4 +272,8 @@ const buttonStyle = {
 const buttonGroupStyle = { display: "flex", justifyContent: "space-between" };
 const dividerStyle = { textAlign: "center", margin: "1.5rem 0", color: "#2d3748", fontSize: "1.2rem" };
 
+<<<<<<< HEAD
 export default Registration;
+=======
+export default Registration;
+>>>>>>> 4e4d65b23337e6a5ef5c60a8dacbe6a03de5a753
