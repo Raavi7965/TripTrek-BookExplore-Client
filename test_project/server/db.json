@@ -1,0 +1,82 @@
+{
+  "users": [
+    {
+      "firstName": "Durga Prasad Reddy",
+      "lastName": "KUSAM",
+      "email": "durgaprasadreddy29762976@gmail.com",
+      "password": "00",
+      "confirmPassword": "00",
+      "username": "Durga Prasad Reddy",
+      "id": 1
+    },
+    {
+      "firstName": "Durga Prasad Reddy",
+      "lastName": "KUSAM",
+      "email": "durgaprasadreddy29762976@gmail.com",
+      "password": "00",
+      "confirmPassword": "00",
+      "username": "Durga Prasad Reddy",
+      "id": 2
+    },
+    {
+      "firstName": "Durga Prasad Reddy",
+      "lastName": "KUSAM",
+      "email": "durgaprasadreddy29762976@gmail.com",
+      "password": "89",
+      "confirmPassword": "89",
+      "username": "Durga Prasad Reddy",
+      "id": 3
+    },
+    {
+      "firstName": "Durga Prasad Reddy",
+      "lastName": "KUSAM",
+      "email": "durgaprasadreddy29762976@gmail.com",
+      "password": "000",
+      "confirmPassword": "000",
+      "username": "jghhj",
+      "id": 4
+    },
+    {
+      "firstName": "Durga Prasad Reddy",
+      "lastName": "KUSAM",
+      "email": "durgaprasadreddy29762976@gmail.com",
+      "password": "0000",
+      "confirmPassword": "0000",
+      "username": "venkatesh",
+      "id": 5
+    },
+    {
+      "userName": "durga",
+      "firstName": "Durga Prasad Reddy",
+      "lastName": "KUSAM",
+      "email": "durgaprasadreddy29762976@gmail.com",
+      "password": "1234",
+      "phoneNumber": "09676855497",
+      "gender": "Male",
+      "dateOfBirth": "2025-02-28",
+      "id": 6
+    },
+    {
+      "userName": "durga",
+      "firstName": "Durga Prasad Reddy",
+      "lastName": "KUSAM",
+      "email": "durgaprasadreddy2976@gmail.com",
+      "password": "00",
+      "phoneNumber": "09676855497",
+      "gender": "Male",
+      "dateOfBirth": "2025-03-05",
+      "id": 7
+    },
+    {
+      "userName": "durga",
+      "firstName": "Durga Prasad Reddy",
+      "lastName": "KUSAM",
+      "email": "df@gmail.com",
+      "password": "1234",
+      "phoneNumber": "09676855497",
+      "gender": "Male",
+      "dateOfBirth": "2025-03-12",
+      "id": 8
+    }
+  ]
+}
