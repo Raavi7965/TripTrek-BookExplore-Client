@@ -1,27 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { Link } from "react-router-dom";
+const Header = ({ isAuthenticated, user }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  const [showProfile, setShowProfile] = useState(false);
 
-const Header = () => {
+  const toggleProfile = () => {
+    setShowProfile(!showProfile);
+  };
+
+  const handleLoginRedirect = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      navigate("/login");
+    }
+  };
+
+  const getLinkStyle = (path) => {
+    return location.pathname === path ? styles.activeLink : styles.link;
+  };
+
   return (
     <header style={styles.header}>
       {/* Logo on the left */}
-      <div style={styles.logo}>
-        🌊🏝 <span style={styles.title}>Book and Explore</span>
+      <div style={styles.logo} onClick={() => navigate("/")}>
+        🌊🏝 <span style={styles.title}>Trip Trek</span>
       </div>
 
       {/* Centered navigation links */}
       <nav style={styles.navCenter}>
-        <Link to="/" style={styles.link}>Home</Link>
-        <Link to="/services" style={styles.link}>Services Provided</Link>
-        <Link to="/contact" style={styles.link}>Contact</Link>
+        <Link to="/tours" style={getLinkStyle("/tours")}>All Tours</Link>
+        <Link to="/bookmarks" style={getLinkStyle("/bookmarks")} onClick={handleLoginRedirect}>Bookmarks</Link>
+        <Link to="/bookings" style={getLinkStyle("/bookings")} onClick={handleLoginRedirect}>My Bookings</Link>
+        <Link to="/dashboard" style={getLinkStyle("/dashboard")} onClick={handleLoginRedirect}>Dashboard</Link>
       </nav>
 
       {/* Right-aligned Register and Login (highlighted) */}
-      <nav style={styles.navRight}>
-        <Link to="/register" style={styles.highlightedLink}>Register</Link>
-        <Link to="/login" style={styles.highlightedLink}>Login</Link>
-      </nav>
+      {!isAuthPage && !isAuthenticated && (
+        <nav style={styles.navRight}>
+          <Link to="/register" style={getLinkStyle("/register")}>Register</Link>
+          <Link to="/login" style={getLinkStyle("/login")}>Login</Link>
+        </nav>
+      )}
+
+      {/* Profile photo and username */}
+      {isAuthenticated && (
+        <div style={styles.profileContainer}>
+          <img
+            src="https://via.placeholder.com/40" // Placeholder image, replace with actual profile photo URL
+            alt="Profile"
+            style={styles.profilePhoto}
+            onClick={toggleProfile}
+          />
+          {showProfile && (
+            <div style={styles.profileDropdown}>
+              <p style={styles.profileUsername}>{user.username}</p>
+            </div>
+          )}
+        </div>
+      )}
     </header>
   );
 };
@@ -47,6 +86,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "10px",
+    cursor: "pointer",
   },
   title: {
     fontFamily: "'Pacifico', cursive",
@@ -68,15 +108,38 @@ const styles = {
     fontWeight: "500",
     transition: "color 0.3s",
   },
-  highlightedLink: {
+  activeLink: {
     color: "#ffea00",
-    fontSize: "1.2rem",
-    fontWeight: "bold",
     textDecoration: "none",
-    padding: "5px 15px",
+    fontSize: "1.1rem",
+    fontWeight: "500",
+    transition: "color 0.3s",
+  },
+  profileContainer: {
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  profilePhoto: {
+    borderRadius: "50%",
+    width: "40px",
+    height: "40px",
+  },
+  profileDropdown: {
+    position: "absolute",
+    top: "50px",
+    right: "0",
+    background: "#fff",
+    color: "#000",
+    padding: "10px",
     borderRadius: "5px",
-    background: "rgba(255, 255, 255, 0.2)",
-    transition: "background 0.3s, color 0.3s",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    textAlign: "center",
+  },
+  profileUsername: {
+    margin: 0,
+    fontWeight: "bold",
   },
 };
 

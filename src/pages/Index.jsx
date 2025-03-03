@@ -18,16 +18,13 @@ const IndexPage = () => {
       </section>
 
       {/* Adventure Activities Section */}
-      <header style={styles.header}>
-        <p style={styles.subTitle}>SELECT TOURS FROM</p>
-        <h1 style={styles.title}>30+ adventure activities</h1>
-        <nav style={styles.nav}>
-        </nav>
+      <section style={styles.activitiesSection}>
+        <h2 style={styles.title}>SELECT TOURS FROM 30+ ADVENTURE ACTIVITIES</h2>
         <button style={styles.exploreBtn}>EXPLORE TOURS</button>
-      </header>
+      </section>
 
       {/* Why Choose Adventour Section */}
-      <section style={styles.section}>
+      <section style={styles.whyChooseSection}>
         <h2 style={styles.whyChoose}>WHY CHOOSE <span style={styles.brand}>ADVENTOUR?</span></h2>
         <div style={styles.cards}>
           <div style={{ ...styles.card, backgroundColor: "#e0f0ff" }}>
@@ -56,7 +53,7 @@ const styles = {
     fontFamily: "Arial, sans-serif",
     textAlign: "center",
     backgroundColor: "#f8fbff",
-    padding: "20px",
+    padding: "80px 20px 20px", // Adjusted padding to account for fixed header
   },
   adventureSection: {
     textAlign: 'center',
@@ -65,10 +62,8 @@ const styles = {
     borderRadius: '10px',
     maxWidth: '600px',
     margin: '0 auto 30px',
-    backgroundImage: 'url("https://example.com/your-image.jpg")',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
   },
   heading: {
     fontSize: '2.5rem',
@@ -82,15 +77,6 @@ const styles = {
   },
   discoverAdventures: {
     marginBottom: '30px',
-  },
-  discoverText: {
-    fontSize: '1.5rem',
-    color: '#444',
-    marginBottom: '10px',
-  },
-  journeyText: {
-    fontSize: '1.2rem',
-    color: '#666',
   },
   searchContainer: {
     display: 'flex',
@@ -114,31 +100,14 @@ const styles = {
     color: '#fff',
     cursor: 'pointer',
   },
-  header: {
-    marginBottom: "30px",
-  },
-  subTitle: {
-    fontSize: "14px",
-    color: "#666",
-    marginBottom: "5px",
+  activitiesSection: {
+    padding: "20px",
+    textAlign: "center",
   },
   title: {
-    fontSize: "28px",
+    fontSize: "24px",
     fontWeight: "bold",
     color: "#333",
-  },
-  nav: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "15px",
-    fontSize: "16px",
-    color: "#aaa",
-    marginBottom: "15px",
-  },
-  active: {
-    color: "#27ae60",
-    fontWeight: "bold",
-    borderBottom: "2px solid #27ae60",
   },
   exploreBtn: {
     backgroundColor: "#27ae60",
@@ -150,7 +119,7 @@ const styles = {
     fontSize: "16px",
     fontWeight: "bold",
   },
-  section: {
+  whyChooseSection: {
     padding: "20px",
   },
   whyChoose: {
@@ -166,6 +135,7 @@ const styles = {
     justifyContent: "center",
     gap: "20px",
     marginTop: "20px",
+    flexWrap: "wrap",
   },
   card: {
     width: "250px",
