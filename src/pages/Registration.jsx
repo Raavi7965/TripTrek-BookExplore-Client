@@ -21,9 +21,28 @@ const Registration = () => {
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Registered:", formData);
+    try {
+      const response = await fetch('http://localhost:3000/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("User Registered:", data);
+        alert("Registration successful!");
+      } else {
+        alert("Registration failed!");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
@@ -271,5 +290,5 @@ const buttonStyle = {
 
 const buttonGroupStyle = { display: "flex", justifyContent: "space-between" };
 const dividerStyle = { textAlign: "center", margin: "1.5rem 0", color: "#2d3748", fontSize: "1.2rem" };
-export default Registration;
-  
+
+export default Registration;

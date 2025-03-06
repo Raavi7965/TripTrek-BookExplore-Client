@@ -1,14 +1,13 @@
 import React from "react";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
-
 const Footer = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <footer className="bg-gray-900 text-white py-6 mt-10">
+    <footer className="footer bg-gray-900 text-white py-6 mt-10">
       <div className="container mx-auto text-center">
         <h2 className="text-xl font-semibold">Adventure Awaits!</h2>
         <p className="text-sm my-2">Plan your next great adventure with us.</p>

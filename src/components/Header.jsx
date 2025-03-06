@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Header = ({ isAuthenticated, user }) => {
+const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
@@ -16,6 +16,16 @@ const Header = ({ isAuthenticated, user }) => {
       e.preventDefault();
       navigate("/login");
     }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    navigate("/");
+  };
+
+  const handleChangePassword = () => {
+    navigate("/change-password");
   };
 
   const getLinkStyle = (path) => {
@@ -49,7 +59,7 @@ const Header = ({ isAuthenticated, user }) => {
       {isAuthenticated && (
         <div style={styles.profileContainer}>
           <img
-            src="https://via.placeholder.com/40" // Placeholder image, replace with actual profile photo URL
+            src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg" // Placeholder image, replace with actual profile photo URL
             alt="Profile"
             style={styles.profilePhoto}
             onClick={toggleProfile}
@@ -57,6 +67,9 @@ const Header = ({ isAuthenticated, user }) => {
           {showProfile && (
             <div style={styles.profileDropdown}>
               <p style={styles.profileUsername}>{user.username}</p>
+              <p style={styles.profileEmail}>{user.email}</p>
+              <button style={styles.changePasswordButton} onClick={handleChangePassword}>Change Password</button>
+              <button style={styles.logoutButton} onClick={handleLogout}>Logout</button>
             </div>
           )}
         </div>
@@ -136,10 +149,37 @@ const styles = {
     borderRadius: "5px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     textAlign: "center",
+    width: "200px",
   },
   profileUsername: {
-    margin: 0,
+    margin: "5px 0",
     fontWeight: "bold",
+    color: "#000",
+  },
+  profileEmail: {
+    margin: "5px 0",
+    fontSize: "0.9rem",
+    color: "#555",
+  },
+  changePasswordButton: {
+    marginTop: "10px",
+    padding: "5px 10px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    width: "100%",
+  },
+  logoutButton: {
+    marginTop: "10px",
+    padding: "5px 10px",
+    backgroundColor: "#ff4d4d",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    width: "100%",
   },
 };
 

@@ -1,0 +1,57 @@
+.dashboard-container {
+    text-align: center;
+    padding: 50px;
+  }
+  
+  .dashboard-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-container p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+  }
+  
+  .contribute-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .contribute-button:hover {
+    background-color: #0056b3;
+  }.dashboard-container {
+    text-align: center;
+    padding: 50px;
+  }
+  
+  .dashboard-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-container p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+  }
+  
+  .contribute-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .contribute-button:hover {
+    background-color: #0056b3;
+  }
