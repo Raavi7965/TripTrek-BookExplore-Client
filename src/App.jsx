@@ -12,6 +12,7 @@ import Registration from "./pages/Registration";
 import ChangePassword from "./pages/ChangePassword";
 import Contribute from "./pages/Contribute";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import './App.css';
 
 const App = () => {
@@ -41,6 +42,7 @@ const App = () => {
             <Route path="/bookings" element={<MyBookings />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </BrowserRouter>
   );

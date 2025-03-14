@@ -44,7 +44,7 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser }) => {
         <Link to="/tours" style={getLinkStyle("/tours")}>All Tours</Link>
         <Link to="/bookmarks" style={getLinkStyle("/bookmarks")} onClick={handleLoginRedirect}>Bookmarks</Link>
         <Link to="/bookings" style={getLinkStyle("/bookings")} onClick={handleLoginRedirect}>My Bookings</Link>
-        <Link to="/dashboard" style={getLinkStyle("/dashboard")} onClick={handleLoginRedirect}>Dashboard</Link>
+        <Link to="/dashboard" style={getLinkStyle("/dashboard")} onClick={handleLoginRedirect}>Contribute</Link>
       </nav>
 
       {/* Right-aligned Register and Login (highlighted) */}
@@ -83,12 +83,12 @@ const styles = {
     position: "fixed",
     top: 0,
     left: 0,
-    width: "95%",
+    width: "97%",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     padding: "15px 30px",
-    background: "linear-gradient(to right, #0077be, #00aaff)",
+    background: "linear-gradient(to right, #0077be,rgb(240, 17, 240))",
     color: "#fff",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     zIndex: 1000,

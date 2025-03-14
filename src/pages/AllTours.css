@@ -1,10 +1,46 @@
 .all-tours-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Search bar moved to header */
+.header-with-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.search-bar {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Tour Cards */
+.tours-grid {
+  display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  padding: 20px;
-  margin-top: 80px; /* Add margin to move content down */
+  width: 100%;
 }
 
 .tour-card {
@@ -14,7 +50,6 @@
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
   width: 300px;
-  position: relative;
 }
 
 .tour-card:hover {
@@ -22,6 +57,7 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* Heart Icon */
 .tour-main-cover {
   position: relative;
 }
@@ -36,16 +72,17 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 24px;
+  font-size: 28px;
   cursor: pointer;
-  color: #ccc;
+  color: white; /* Default white */
   transition: color 0.3s;
 }
 
 .heart-icon.active {
-  color: pink;
+  color: red; /* Turns red when clicked */
 }
 
+/* Tour Details */
 .tour-details {
   padding: 15px;
   text-align: center;
@@ -62,6 +99,7 @@
   color: #666;
 }
 
+/* View Details Button */
 .view-details-button {
   background-color: #007bff;
   color: #fff;
