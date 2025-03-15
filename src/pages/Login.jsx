@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = ({ setIsAuthenticated, setUser }) => {
@@ -7,6 +7,17 @@ const Login = ({ setIsAuthenticated, setUser }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedIsAuthenticated = localStorage.getItem("isAuthenticated");
+
+    if (storedUser && storedIsAuthenticated) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(JSON.parse(storedIsAuthenticated));
+      navigate("/"); // Navigate to the home page
+    }
+  }, [setIsAuthenticated, setUser, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -23,6 +34,8 @@ const Login = ({ setIsAuthenticated, setUser }) => {
         setMessage("Login was successful!");
         setIsAuthenticated(true);
         setUser(user);
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("isAuthenticated", true);
         navigate("/"); // Navigate to the home page
       } else {
         setMessage("Invalid email or password.");
@@ -161,4 +174,4 @@ const Login = ({ setIsAuthenticated, setUser }) => {
   );
 };
 
-export default Login; 
+export default Login;

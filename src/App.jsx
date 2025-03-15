@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from "./components/ProtectedRoute";
 import Bookmarks from "./pages/Bookmarks";
@@ -20,6 +20,16 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [bookmarks, setBookmarks] = useState([]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedIsAuthenticated = localStorage.getItem("isAuthenticated");
+
+    if (storedUser && storedIsAuthenticated) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(JSON.parse(storedIsAuthenticated));
+    }
+  }, []);
 
   return (
     <BrowserRouter>
