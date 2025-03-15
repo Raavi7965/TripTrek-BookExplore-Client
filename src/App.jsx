@@ -31,10 +31,17 @@ const App = () => {
     }
   }, []);
 
+  const logout = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("isAuthenticated");
+  };
+
   return (
     <BrowserRouter>
       <div className="app-container">
-        <Header isAuthenticated={isAuthenticated} user={user} setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
+        <Header isAuthenticated={isAuthenticated} user={user} setIsAuthenticated={setIsAuthenticated} setUser={setUser} logout={logout} />
         <div className="routes-container">
           <Routes>
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />

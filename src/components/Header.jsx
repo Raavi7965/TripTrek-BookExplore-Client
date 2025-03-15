@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser }) => {
+const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser, logout }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
@@ -19,8 +19,7 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser }) => {
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
+    logout();
     navigate("/");
   };
 
@@ -70,7 +69,7 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser }) => {
           />
           {showProfile && (
             <div style={styles.profileDropdown}>
-              <p style={styles.profileUsername}>{user.username}</p>
+              <p style={styles.profileUsername}>{user.userName}</p>
               <p style={styles.profileEmail}>{user.email}</p>
               <button style={styles.changePasswordButton} onClick={handleChangePassword}>Change Password</button>
               <button style={styles.profileEditButton} onClick={handleProfileEdit}>Edit Profile</button>
