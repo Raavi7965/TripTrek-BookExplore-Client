@@ -1,82 +1,48 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaRegEye } from "react-icons/fa";
-import "./PaymentForm.css";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const PaymentForm = () => {
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [cvv, setCvv] = useState("");
-  const [name, setName] = useState("");
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const navigate = useNavigate();
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [orderID, setOrderID] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleApprove = (orderData) => {
+    console.log("Order Approved: ", orderData);
+    setSuccess(true);
+    setOrderID(orderData.id);
+  };
 
-    const newBooking = {
-      id: Date.now(),
-      name: "Paris Adventure",
-      date: new Date().toLocaleDateString(),
-      status: "Confirmed",
-    };
-
-    const storedBookings = JSON.parse(localStorage.getItem("bookings")) || [];
-    localStorage.setItem("bookings", JSON.stringify([...storedBookings, newBooking]));
-
-    setPaymentSuccess(true);
-    setTimeout(() => {
-      navigate("/bookings");
-    }, 2000);
+  const handleError = (error) => {
+    console.error("PayPal Error: ", error);
+    setErrorMessage("Payment failed. Please try again.");
   };
 
   return (
-    <div className="payment-overlay">
-      <div className="payment-container">
-        <div className="payment-box">
-          <div className="payment-header">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="payment-logo" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="MasterCard" className="payment-logo" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="payment-logo" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_Pay_logo.svg" alt="Apple Pay" className="payment-logo" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5d/Google_Pay_Logo.svg" alt="Google Pay" className="payment-logo" />
-          </div>
+    <div className="payment-container">
+      <h2>Secure Payment</h2>
+      <p>Complete your booking by making a payment.</p>
 
-          <h2 className="payment-title">Choose a Payment Method</h2>
+      <PayPalScriptProvider options={{ "client-id": "AVBrSqvs05pv2BY5nSURePwVjBLCMGCLTot4ikN7m9AX7IbGcTLzOZImWYxwDeC_o4NGIzFjWOydofVt" }}>
+        <PayPalButtons
+          style={{ layout: "vertical" }}
+          createOrder={(data, actions) => {
+            return actions.order.create({
+              purchase_units: [
+                {
+                  amount: { value: "50.00" }, // Adjust price dynamically
+                },
+              ],
+            });
+          }}
+          onApprove={(data, actions) => {
+            return actions.order.capture().then(handleApprove);
+          }}
+          onError={handleError}
+        />
+      </PayPalScriptProvider>
 
-          <form className="payment-form" onSubmit={handleSubmit}>
-            <label>Cardholder Name</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full Name" required />
-
-            <label>Card Number</label>
-            <div className="input-container">
-              <input type="text" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} placeholder="**** **** **** ****" required />
-              <FaRegEye className="eye-icon" />
-            </div>
-
-            <div className="expiry-cvv">
-              <div>
-                <label>Expiration Date</label>
-                <input type="text" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} placeholder="MM/YY" required />
-              </div>
-              <div>
-                <label>CVV</label>
-                <input type="text" value={cvv} onChange={(e) => setCvv(e.target.value)} placeholder="***" required />
-              </div>
-            </div>
-
-            <button type="submit" className="payment-button">Pay Now</button>
-          </form>
-
-          {paymentSuccess && <div className="success-message">Payment Successful! Redirecting...</div>}
-
-          {/* QR Code Payment Option */}
-          <div className="qr-code-container">
-            <p>Or pay via QR Code:</p>
-            <img src="images/QRcode.jpg" alt="QR Code" className="qr-code" onError={(e) => e.target.style.display='none'} />
-          </div>
-        </div>
-      </div>
+      {success && <div className="success-message">Payment Successful! Order ID: {orderID}</div>}
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
     </div>
   );
 };
