@@ -4,6 +4,7 @@ import "./AllTours.css";
 
 const AllTours = ({ bookmarks = [], setBookmarks }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [tourRatings, setTourRatings] = useState({});
   const location = useLocation();
 
   useEffect(() => {
@@ -32,9 +33,8 @@ const AllTours = ({ bookmarks = [], setBookmarks }) => {
     { id: 15, name: 'Mahabaleshwar Paragliding', location: 'Mahabaleshwar, Maharashtra, India', price: '₹6,500/-', rating: '4.6 (Very Good)', img: 'https://tripxl.com/blog/wp-content/uploads/2024/10/Advanced-Paragliding.jpg' },
     { id: 16, name: 'Andaman Scuba Diving', location: 'Havelock Island, Andaman & Nicobar, India', price: '₹55,500/-', rating: '4.5 (Very Good)', img: 'https://cdn.experienceandamans.com/images/scuba-diving-andaman-islands.jpg' },
     { id: 17, name: 'Ooty Nilgiri Toy Train Ride', location: 'Ooty, Tamil Nadu, India', price: '₹1,200/-', rating: '4.4 (Very Good)', img: 'https://5.imimg.com/data5/SELLER/Default/2023/6/317474042/KG/OY/WB/61387680/12-1--500x500.jpg' },
-    { id: 20, name: 'Bungee Jumping in Rishikesh', location: 'Rishikesh, Uttarakhand, India', price: '₹4,500/-', rating: '4.7 (Excellent)', img: 'https://campgangavatika.com/imgart/bungee-jump-rishikesh.jpg' }
+    { id: 18, name: 'Bungee Jumping in Rishikesh', location: 'Rishikesh, Uttarakhand, India', price: '₹4,500/-', rating: '4.7 (Excellent)', img: 'https://campgangavatika.com/imgart/bungee-jump-rishikesh.jpg' }
 ];
-
 
   const handleBookmark = (tour) => {
     if (bookmarks?.some((bookmark) => bookmark.id === tour.id)) {
@@ -44,10 +44,34 @@ const AllTours = ({ bookmarks = [], setBookmarks }) => {
     }
   };
 
-  const filteredTours = tours.filter(
-    (tour) =>
-      tour.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tour.location.toLowerCase().includes(searchTerm.toLowerCase())
+  const handleRating = (tourId, rating) => {
+    setTourRatings((prevRatings) => ({
+      ...prevRatings,
+      [tourId]: rating
+    }));
+  };
+
+  const renderStars = (tourId) => {
+    const rating = tourRatings[tourId] || 0;
+    return (
+      <span className="star-rating">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={`star ${star <= rating ? "rated" : ""}`}
+            onClick={() => handleRating(tourId, star)}
+          >
+            ★
+          </span>
+        ))}
+      </span>
+    );
+  };
+
+  // **Filtering Tours Based on Search**
+  const filteredTours = tours.filter((tour) =>
+    tour.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tour.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -66,29 +90,33 @@ const AllTours = ({ bookmarks = [], setBookmarks }) => {
       </div>
 
       <div className="tours-grid">
-        {filteredTours.map((tour) => (
-          <div key={tour.id} className="tour-card">
-            <div className="tour-main-cover">
-              <img src={tour.img} alt={tour.name} />
-              <div
-                className={`heart-icon ${bookmarks?.some((bookmark) => bookmark.id === tour.id) ? "active" : ""}`}
-                onClick={() => handleBookmark(tour)}
-              >
-                ♥
+        {filteredTours.length > 0 ? (
+          filteredTours.map((tour) => (
+            <div key={tour.id} className="tour-card">
+              <div className="tour-main-cover">
+                <img src={tour.img} alt={tour.name} />
+                <div
+                  className={`heart-icon ${bookmarks?.some((bookmark) => bookmark.id === tour.id) ? "active" : ""}`}
+                  onClick={() => handleBookmark(tour)}
+                >
+                  ♥
+                </div>
+              </div>
+              <div className="tour-details">
+                <h3>{tour.name}</h3>
+                <p>{tour.location}</p>
+                <p>{renderStars(tour.id)}</p>
+                <p>Starting from</p>
+                <p>{tour.price}</p>
+                <Link to={`/tours/${tour.id}`}>
+                  <button className="view-details-button">View Details</button>
+                </Link>
               </div>
             </div>
-            <div className="tour-details">
-              <h3>{tour.name}</h3>
-              <p>{tour.location}</p>
-              <p>{tour.rating}</p>
-              <p>Starting from</p>
-              <p>{tour.price}</p>
-              <Link to={`/tours/${tour.id}`}>
-                <button className="view-details-button">View Details</button>
-              </Link>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="no-results">No tours found</p>
+        )}
       </div>
     </div>
   );

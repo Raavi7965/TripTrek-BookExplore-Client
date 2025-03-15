@@ -14,6 +14,7 @@ import Contribute from "./pages/Contribute";
 import ProfileEdit from "./pages/ProfileEdit";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import PaymentForm from './pages/PaymentForm';
 import './App.css';
 
 const App = () => {
@@ -59,6 +60,11 @@ const App = () => {
             } />
             <Route path="/bookings" element={<MyBookings />} />
             <Route path="/profile-edit" element={<ProfileEdit user={user} />} />
+            <Route path="/payment" element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <PaymentForm />
+              </ProtectedRoute>
+            } />
           </Routes>
         </div>
         <Footer />

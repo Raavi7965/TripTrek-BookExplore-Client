@@ -113,3 +113,17 @@
 .view-details-button:hover {
   background-color: #0056b3;
 }
+.star-rating {
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.star {
+  color: lightgray;
+  transition: color 0.2s;
+}
+
+.star.rated {
+  color: gold;
+}

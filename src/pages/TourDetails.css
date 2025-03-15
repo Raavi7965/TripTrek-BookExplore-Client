@@ -1,0 +1,192 @@
+.tour-details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    animation: fadeIn 0.5s ease-in;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tour-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .tour-images {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .tour-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.3s;
+  }
+  
+  .tour-image:hover {
+    transform: scale(1.05);
+  }
+  
+  .tour-section {
+    margin-bottom: 20px;
+  }
+  
+  .tour-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .tour-section p,
+  .tour-section ul {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .tour-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .review-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+  }
+  
+  .review-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .review-user {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-initial {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .user-name {
+    font-weight: bold;
+  }
+  
+  .review-rating {
+    text-align: right;
+  }
+  
+  .review-type {
+    margin-left: 5px;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .review-images {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .review-image {
+    width: 80px;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  .read-more-button {
+    margin-top: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .read-more-button:hover {
+    background: #0056b3;
+  }
+  
+  .book-now-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .book-now-button:hover {
+    background-color: #218838;
+  }
+  
+  /* Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in;
+  }
+  
+  .modal-image {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
