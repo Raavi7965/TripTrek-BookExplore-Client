@@ -28,6 +28,10 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser }) => {
     navigate("/change-password");
   };
 
+  const handleProfileEdit = () => {
+    navigate("/profile-edit");
+  };
+
   const getLinkStyle = (path) => {
     return location.pathname === path ? styles.activeLink : styles.link;
   };
@@ -69,6 +73,7 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser }) => {
               <p style={styles.profileUsername}>{user.username}</p>
               <p style={styles.profileEmail}>{user.email}</p>
               <button style={styles.changePasswordButton} onClick={handleChangePassword}>Change Password</button>
+              <button style={styles.profileEditButton} onClick={handleProfileEdit}>Edit Profile</button>
               <button style={styles.logoutButton} onClick={handleLogout}>Logout</button>
             </div>
           )}
@@ -165,6 +170,16 @@ const styles = {
     marginTop: "10px",
     padding: "5px 10px",
     backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    width: "100%",
+  },
+  profileEditButton: {
+    marginTop: "10px",
+    padding: "5px 10px",
+    backgroundColor: "#4caf50",
     color: "#fff",
     border: "none",
     borderRadius: "5px",

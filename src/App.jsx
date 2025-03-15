@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import ChangePassword from "./pages/ChangePassword";
 import Contribute from "./pages/Contribute";
+import ProfileEdit from "./pages/ProfileEdit";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import './App.css';
@@ -40,6 +41,7 @@ const App = () => {
               </ProtectedRoute>
             } />
             <Route path="/bookings" element={<MyBookings />} />
+            <Route path="/profile-edit" element={<ProfileEdit user={user} />} />
           </Routes>
         </div>
         <Footer />

@@ -16,7 +16,7 @@ const ChangePassword = ({ user }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/users/${user.id}`, {
+      const response = await fetch(`https://triptrek-bookexplore-server.onrender.com/users/${user.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

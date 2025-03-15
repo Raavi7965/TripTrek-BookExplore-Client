@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 const Login = ({ setIsAuthenticated, setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -107,7 +108,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -121,6 +122,14 @@ const Login = ({ setIsAuthenticated, setUser }) => {
                 fontSize: "16px",
               }}
             />
+            <label style={{ display: "block", marginTop: "0.5rem" }}>
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />{" "}
+              Show Password
+            </label>
           </div>
           <button
             type="submit"
@@ -152,4 +161,4 @@ const Login = ({ setIsAuthenticated, setUser }) => {
   );
 };
 
-export default Login;
+export default Login; 
