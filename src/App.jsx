@@ -15,6 +15,7 @@ import ProfileEdit from "./pages/ProfileEdit";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PaymentForm from './pages/PaymentForm';
+import ResetPassword from './pages/ResetPassword';
 import './App.css';
 
 const App = () => {
@@ -65,6 +66,7 @@ const App = () => {
                 <PaymentForm />
               </ProtectedRoute>
             } />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
         </div>
         <Footer />

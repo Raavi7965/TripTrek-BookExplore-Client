@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 const Registration = () => {
@@ -13,6 +14,7 @@ const Registration = () => {
     gender: "",
     dateOfBirth: "",
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,6 +38,7 @@ const Registration = () => {
         const data = await response.json();
         console.log("User Registered:", data);
         alert("Registration successful!");
+        navigate("/login"); // Redirect to login page after successful registration
       } else {
         alert("Registration failed!");
       }

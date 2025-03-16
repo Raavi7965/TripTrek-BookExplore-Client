@@ -1,44 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Login = ({ setIsAuthenticated, setUser }) => {
+const ResetPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedIsAuthenticated = localStorage.getItem("isAuthenticated");
-
-    if (storedUser && storedIsAuthenticated) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(JSON.parse(storedIsAuthenticated));
-      navigate("/"); // Navigate to the home page
-    }
-  }, [setIsAuthenticated, setUser, navigate]);
-
-  const handleLogin = async (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
 
     try {
       const response = await fetch("https://triptrek-bookexplore-server.onrender.com/users");
       const users = await response.json();
 
-      const user = users.find(
-        (user) => user.email === email && user.password === password
-      );
+      const user = users.find((user) => user.email === email);
 
       if (user) {
-        setMessage("Login was successful!");
-        setIsAuthenticated(true);
-        setUser(user);
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("isAuthenticated", true);
-        navigate("/"); // Navigate to the home page
+        // Update the user's password
+        const updatedUser = { ...user, password: newPassword };
+
+        // Send the updated user data to the server
+        await fetch(`https://triptrek-bookexplore-server.onrender.com/users/${user.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedUser),
+        });
+
+        setMessage("Password reset successful! Redirecting to login...");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       } else {
-        setMessage("Invalid email or password.");
+        setMessage("Email not found.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -79,9 +75,9 @@ const Login = ({ setIsAuthenticated, setUser }) => {
             marginBottom: "1rem",
           }}
         >
-          TripTrekBook&Explore Login
+          Reset Password
         </h2>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleResetPassword}>
           <div style={{ marginBottom: "1rem" }}>
             <label
               style={{
@@ -118,13 +114,13 @@ const Login = ({ setIsAuthenticated, setUser }) => {
                 color: "#555",
               }}
             >
-              Password
+              New Password
             </label>
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="Enter your new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               required
               style={{
                 width: "100%",
@@ -135,14 +131,6 @@ const Login = ({ setIsAuthenticated, setUser }) => {
                 fontSize: "16px",
               }}
             />
-            <label style={{ display: "block", marginTop: "0.5rem" }}>
-              <input
-                type="checkbox"
-                checked={showPassword}
-                onChange={() => setShowPassword(!showPassword)}
-              />{" "}
-              Show Password
-            </label>
           </div>
           <button
             type="submit"
@@ -161,7 +149,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
             onMouseOver={(e) => (e.target.style.opacity = "0.8")}
             onMouseOut={(e) => (e.target.style.opacity = "1")}
           >
-            Login
+            Reset Password
           </button>
         </form>
         {message && (
@@ -169,14 +157,9 @@ const Login = ({ setIsAuthenticated, setUser }) => {
             {message}
           </p>
         )}
-        <div style={{ textAlign: "center", marginTop: "1rem" }}>
-          <Link to="/reset-password" style={{ color: "#3498db" }}>
-            Forgot Password?
-          </Link>
-        </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default ResetPassword;
