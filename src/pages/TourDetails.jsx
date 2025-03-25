@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import L from "leaflet"
-import "./TourDetails.css"
+import "./tourdetails.css"
 import { AlertTriangle, CheckSquare, Square, Sun, Cloud, CloudRain, Thermometer, User, Star, Calendar, MapPin, Shield, Package, Users, PenToolIcon as Tool, ShoppingCart, CreditCard, Clock, Phone, Mail, ExternalLink } from 'lucide-react'
 
 // Fix for Leaflet marker icons
