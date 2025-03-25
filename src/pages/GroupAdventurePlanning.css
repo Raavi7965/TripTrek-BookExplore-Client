@@ -1,0 +1,649 @@
+.group-adventure-planning-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Adventure Header */
+  .adventure-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .adventure-title-section {
+    flex: 1;
+  }
+  
+  .adventure-title-input {
+    font-size: 1.8rem;
+    font-weight: bold;
+    border: none;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    width: 100%;
+    background-color: transparent;
+  }
+  
+  .adventure-title-input:focus {
+    outline: none;
+    border-bottom: 2px solid #007bff;
+  }
+  
+  .adventure-meta {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .adventure-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .adventure-meta-item label {
+    font-weight: 500;
+    color: #666;
+  }
+  
+  .adventure-meta-item input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 10px;
+  }
+  
+  .adventure-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .share-button,
+  .export-button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .share-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+  }
+  
+  .share-button:hover {
+    background-color: #0069d9;
+  }
+  
+  .export-button {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+  
+  .export-button:hover {
+    background-color: #f5f5f5;
+  }
+  
+  /* Group Members */
+  .adventure-group-members {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .adventure-group-members h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .group-members-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .group-member {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f5f7fa;
+    padding: 8px 12px;
+    border-radius: 20px;
+    position: relative;
+  }
+  
+  .member-avatar {
+    font-size: 1.2rem;
+  }
+  
+  .member-name {
+    font-weight: 500;
+  }
+  
+  .remove-member-button {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 5px;
+  }
+  
+  .remove-member-button:hover {
+    color: #ff4d4d;
+  }
+  
+  .add-member-form {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .add-member-form input {
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .add-member-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .add-member-form button:hover {
+    background-color: #0069d9;
+  }
+  
+  /* Tabs */
+  .adventure-tabs {
+    display: flex;
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+  }
+  
+  .tab:hover {
+    color: #333;
+  }
+  
+  .tab.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+  }
+  
+  /* Content Sections */
+  .adventure-content {
+    min-height: 400px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .section-header h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin: 0;
+  }
+  
+  .progress-indicator {
+    background-color: #f5f7fa;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  /* Itinerary Section */
+  .itinerary-days {
+    margin-bottom: 30px;
+  }
+  
+  .itinerary-day {
+    margin-bottom: 20px;
+  }
+  
+  .itinerary-day h4 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .itinerary-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .itinerary-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+  }
+  
+  .itinerary-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .itinerary-item.completed {
+    background-color: #f0f7ff;
+  }
+  
+  .itinerary-item.completed .item-text {
+    text-decoration: line-through;
+    color: #999;
+  }
+  
+  .item-time {
+    width: 70px;
+    font-weight: 500;
+    color: #007bff;
+  }
+  
+  .item-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+  
+  .item-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #007bff;
+    font-weight: bold;
+  }
+  
+  .itinerary-item.completed .item-checkbox {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .delete-item-button {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 5px;
+    visibility: hidden;
+  }
+  
+  .itinerary-item:hover .delete-item-button {
+    visibility: visible;
+  }
+  
+  .delete-item-button:hover {
+    color: #ff4d4d;
+  }
+  
+  .add-itinerary-form,
+  .add-task-form,
+  .add-expense-form {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .form-row:last-child {
+    margin-bottom: 0;
+  }
+  
+  .form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .form-group.full-width {
+    flex: 3;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.95rem;
+  }
+  
+  .form-row button {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 500;
+    height: 40px;
+  }
+  
+  .form-row button:hover {
+    background-color: #0069d9;
+  }
+  
+  /* Tasks Section */
+  .tasks-list {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 30px;
+  }
+  
+  .task-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+  }
+  
+  .task-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .task-item.completed {
+    background-color: #f0f7ff;
+  }
+  
+  .task-item.completed .task-text {
+    text-decoration: line-through;
+    color: #999;
+  }
+  
+  .task-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #007bff;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .task-item.completed .task-checkbox {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .task-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .task-assignee {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #e9ecef;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+  }
+  
+  /* Expenses Section */
+  .expense-summary {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .total-expenses {
+    font-weight: 600;
+    color: #007bff;
+  }
+  
+  .per-person {
+    color: #666;
+  }
+  
+  .expense-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .filter-button {
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #666;
+    transition: all 0.2s ease;
+  }
+  
+  .filter-button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .filter-button.active {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .expenses-list {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 30px;
+  }
+  
+  .expense-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+  }
+  
+  .expense-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .expense-category {
+    background-color: #e9ecef;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    margin-right: 15px;
+    min-width: 80px;
+    text-align: center;
+  }
+  
+  .expense-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .expense-description {
+    font-weight: 500;
+  }
+  
+  .expense-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .expense-amount {
+    font-weight: 600;
+    color: #007bff;
+  }
+  
+  .expense-paid-by {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: #666;
+  }
+  
+  .expense-balances {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 30px;
+  }
+  
+  .expense-balances h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+  }
+  
+  .balances-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .balance-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .balance-item:last-child {
+    border-bottom: none;
+  }
+  
+  .balance-person {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .balance-amount {
+    font-weight: 500;
+  }
+  
+  .balance-amount.positive {
+    color: #28a745;
+  }
+  
+  .balance-amount.negative {
+    color: #dc3545;
+  }
+  
+  /* Notes Section */
+  .notes-textarea {
+    width: 100%;
+    min-height: 300px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: vertical;
+  }
+  
+  .notes-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .adventure-header {
+      flex-direction: column;
+      gap: 15px;
+    }
+  
+    .adventure-meta {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .adventure-actions {
+      width: 100%;
+    }
+  
+    .adventure-actions button {
+      flex: 1;
+    }
+  
+    .form-row {
+      flex-direction: column;
+    }
+  
+    .expense-details {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+  
+    .task-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+  }
+  
+  

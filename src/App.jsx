@@ -17,6 +17,7 @@ import Footer from "./components/Footer";
 import PaymentForm from './pages/PaymentForm';
 import ResetPassword from './pages/ResetPassword';
 import UserPage from './pages/UserPage';
+import GroupAdventurePlanning from './pages/GroupAdventurePlanning';
 import './App.css';
 
 const App = () => {
@@ -69,6 +70,7 @@ const App = () => {
             } />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/user" element={<UserPage user={user} />} />
+            <Route path="/group-adventure-planning" element={<GroupAdventurePlanning />} />
           </Routes>
         </div>
         <Footer />
@@ -78,3 +80,4 @@ const App = () => {
 };
 
 export default App;
+

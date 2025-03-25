@@ -3,8 +3,28 @@ import { useParams, useNavigate } from "react-router-dom"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import L from "leaflet"
-import "./tourdetails.css"
-import { AlertTriangle, CheckSquare, Square, Sun, Cloud, CloudRain, Thermometer, User, Star, Calendar, MapPin, Shield, Package, Users, PenToolIcon as Tool, ShoppingCart, CreditCard, Clock, Phone, Mail, ExternalLink } from 'lucide-react'
+import "./TourDetails.css"
+import {
+  AlertTriangle,
+  CheckSquare,
+  Square,
+  Sun,
+  Cloud,
+  CloudRain,
+  Thermometer,
+  User,
+  Star,
+  Calendar,
+  MapPin,
+  Shield,
+  Package,
+  Users,
+  PenToolIcon as Tool,
+  ShoppingCart,
+  Clock,
+  Phone,
+  ExternalLink,
+} from "lucide-react"
 
 // Fix for Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl
@@ -810,7 +830,8 @@ const mockTourData = {
     id: 8,
     name: "Goa Water Sports",
     location: "Goa",
-    description: "Experience thrilling water sports in the beautiful beaches of Goa. Activities include jet skiing, parasailing, and banana boat rides.",
+    description:
+      "Experience thrilling water sports in the beautiful beaches of Goa. Activities include jet skiing, parasailing, and banana boat rides.",
     price: "₹2,000",
     discountedPrice: "₹1,800",
     images: [
@@ -832,7 +853,8 @@ const mockTourData = {
         user: "Michael",
         date: "2024-03-15",
         rating: 5,
-        comment: "Had an incredible time with the water sports package. The instructors were professional and ensured safety throughout.",
+        comment:
+          "Had an incredible time with the water sports package. The instructors were professional and ensured safety throughout.",
         images: [],
       },
       {
@@ -849,7 +871,8 @@ const mockTourData = {
     id: 9,
     name: "Meghalaya Caving Adventure",
     location: "Meghalaya",
-    description: "Explore the mysterious caves of Meghalaya, known as the 'Abode of Clouds'. Discover underground rivers, stalactites, and stalagmites.",
+    description:
+      "Explore the mysterious caves of Meghalaya, known as the 'Abode of Clouds'. Discover underground rivers, stalactites, and stalagmites.",
     price: "₹3,500",
     discountedPrice: "₹3,200",
     images: [
@@ -888,7 +911,8 @@ const mockTourData = {
     id: 10,
     name: "Sand Dune Safari & Camping",
     location: "Jaisalmer",
-    description: "Experience the magic of the Thar Desert with a thrilling sand dune safari followed by an overnight camping experience under the stars.",
+    description:
+      "Experience the magic of the Thar Desert with a thrilling sand dune safari followed by an overnight camping experience under the stars.",
     price: "₹4,000",
     discountedPrice: "₹3,600",
     images: [
@@ -919,7 +943,8 @@ const mockTourData = {
         user: "Sophia",
         date: "2024-03-22",
         rating: 4,
-        comment: "The cultural program and food were excellent. The tents were comfortable but it got quite cold at night.",
+        comment:
+          "The cultural program and food were excellent. The tents were comfortable but it got quite cold at night.",
         images: [],
       },
     ],
@@ -928,7 +953,8 @@ const mockTourData = {
     id: 11,
     name: "White Water Rafting",
     location: "Rishikesh",
-    description: "Challenge yourself with an adrenaline-pumping white water rafting experience on the Ganges River in Rishikesh, the adventure capital of India.",
+    description:
+      "Challenge yourself with an adrenaline-pumping white water rafting experience on the Ganges River in Rishikesh, the adventure capital of India.",
     price: "₹1,800",
     discountedPrice: "₹1,500",
     images: [
@@ -950,7 +976,8 @@ const mockTourData = {
         user: "James",
         date: "2024-03-15",
         rating: 5,
-        comment: "The rapids were amazing! Our guide was excellent and made sure we had a safe but exciting experience.",
+        comment:
+          "The rapids were amazing! Our guide was excellent and made sure we had a safe but exciting experience.",
         images: [],
       },
       {
@@ -967,7 +994,8 @@ const mockTourData = {
     id: 12,
     name: "Coorg Coffee Plantation Trek",
     location: "Coorg",
-    description: "Trek through the lush coffee plantations of Coorg, learning about coffee cultivation while enjoying the beautiful Western Ghats landscape.",
+    description:
+      "Trek through the lush coffee plantations of Coorg, learning about coffee cultivation while enjoying the beautiful Western Ghats landscape.",
     price: "₹2,200",
     discountedPrice: "₹1,900",
     images: [
@@ -990,7 +1018,8 @@ const mockTourData = {
         user: "William",
         date: "2024-03-18",
         rating: 5,
-        comment: "Learned so much about coffee cultivation. The plantation was beautiful and the coffee tasting was excellent!",
+        comment:
+          "Learned so much about coffee cultivation. The plantation was beautiful and the coffee tasting was excellent!",
         images: [],
       },
       {
@@ -1007,7 +1036,8 @@ const mockTourData = {
     id: 13,
     name: "Zanskar Frozen River Trek",
     location: "Zanskar",
-    description: "Embark on the legendary Chadar Trek along the frozen Zanskar River, one of the most unique and challenging winter treks in the world.",
+    description:
+      "Embark on the legendary Chadar Trek along the frozen Zanskar River, one of the most unique and challenging winter treks in the world.",
     price: "₹25,000",
     discountedPrice: "₹22,000",
     images: [
@@ -1045,7 +1075,8 @@ const mockTourData = {
     id: 14,
     name: "Munnar Tea Estate Walk",
     location: "Munnar",
-    description: "Stroll through the verdant tea plantations of Munnar, learning about tea cultivation and processing while enjoying the cool mountain air.",
+    description:
+      "Stroll through the verdant tea plantations of Munnar, learning about tea cultivation and processing while enjoying the cool mountain air.",
     price: "₹1,500",
     discountedPrice: "₹1,300",
     images: [
@@ -1067,7 +1098,8 @@ const mockTourData = {
         user: "Daniel",
         date: "2024-03-22",
         rating: 5,
-        comment: "The rolling hills covered in tea plantations were stunning. The guide was knowledgeable about tea cultivation.",
+        comment:
+          "The rolling hills covered in tea plantations were stunning. The guide was knowledgeable about tea cultivation.",
         images: [],
       },
       {
@@ -1084,7 +1116,8 @@ const mockTourData = {
     id: 15,
     name: "Mahabaleshwar Paragliding",
     location: "Mahabaleshwar",
-    description: "Soar above the beautiful Sahyadri mountains with a tandem paragliding experience in Mahabaleshwar, offering breathtaking views of the valleys below.",
+    description:
+      "Soar above the beautiful Sahyadri mountains with a tandem paragliding experience in Mahabaleshwar, offering breathtaking views of the valleys below.",
     price: "₹3,000",
     discountedPrice: "₹2,700",
     images: [
@@ -1123,7 +1156,8 @@ const mockTourData = {
     id: 16,
     name: "Andaman Scuba Diving",
     location: "Andaman",
-    description: "Discover the vibrant underwater world of the Andaman Islands with scuba diving experiences suitable for beginners and certified divers.",
+    description:
+      "Discover the vibrant underwater world of the Andaman Islands with scuba diving experiences suitable for beginners and certified divers.",
     price: "₹4,500",
     discountedPrice: "₹4,000",
     images: [
@@ -1162,7 +1196,8 @@ const mockTourData = {
     id: 17,
     name: "Ooty Nilgiri Toy Train Ride",
     location: "Ooty",
-    description: "Experience the charm of the UNESCO-listed Nilgiri Mountain Railway, a heritage toy train that winds through picturesque landscapes and tunnels.",
+    description:
+      "Experience the charm of the UNESCO-listed Nilgiri Mountain Railway, a heritage toy train that winds through picturesque landscapes and tunnels.",
     price: "₹1,200",
     discountedPrice: "₹1,000",
     images: [
@@ -1184,7 +1219,8 @@ const mockTourData = {
         user: "Noah",
         date: "2024-03-20",
         rating: 5,
-        comment: "A beautiful journey through time. The steam locomotive and vintage coaches were charming and the scenery was spectacular.",
+        comment:
+          "A beautiful journey through time. The steam locomotive and vintage coaches were charming and the scenery was spectacular.",
         images: [],
       },
       {
@@ -1201,7 +1237,8 @@ const mockTourData = {
     id: 18,
     name: "Bungee Jumping in Rishikesh",
     location: "Rishikesh",
-    description: "Experience the ultimate adrenaline rush with a bungee jump from a 83-meter high platform over the Ganges River in Rishikesh.",
+    description:
+      "Experience the ultimate adrenaline rush with a bungee jump from a 83-meter high platform over the Ganges River in Rishikesh.",
     price: "₹3,500",
     discountedPrice: "₹3,200",
     images: [
@@ -1224,7 +1261,8 @@ const mockTourData = {
         user: "Lucas",
         date: "2024-03-25",
         rating: 5,
-        comment: "The scariest thing I've ever done but also the most exhilarating. The staff were professional and safety was clearly a priority.",
+        comment:
+          "The scariest thing I've ever done but also the most exhilarating. The staff were professional and safety was clearly a priority.",
         images: [],
       },
       {
@@ -1232,7 +1270,8 @@ const mockTourData = {
         user: "Lily",
         date: "2024-03-22",
         rating: 4,
-        comment: "Took me three attempts to finally jump but it was worth it! The views of the river and mountains were incredible.",
+        comment:
+          "Took me three attempts to finally jump but it was worth it! The views of the river and mountains were incredible.",
         images: [],
       },
     ],
@@ -1283,6 +1322,16 @@ const TourDetails = () => {
         if (!data) {
           throw new Error("Tour not found")
         }
+
+        // Ensure all tours have valid images
+        if (!data.images || data.images.length === 0 || !data.images.every(validateImageUrl)) {
+          data.images = [
+            "https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+            "https://images.unsplash.com/photo-1494564605686-2e931f77a8e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+            "https://images.unsplash.com/photo-1516638121-7d8c9e67a0f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+          ]
+        }
+
         setTour(data)
         fetchWeather(data.location)
         fetchWeatherForecast(data.location)
@@ -1296,7 +1345,7 @@ const TourDetails = () => {
 
         // Set guides for the location
         setGuides(localGuides[data.location] || localGuides.default)
-        
+
         // Set rental shops based on adventure type
         setRentalShops(gearRentals[adventureType] || gearRentals.default)
       } catch (error) {
@@ -1420,10 +1469,10 @@ const TourDetails = () => {
   }
 
   const handleRentalItemToggle = (item) => {
-    const isSelected = selectedRentalItems.some(selectedItem => selectedItem.name === item.name)
-    
+    const isSelected = selectedRentalItems.some((selectedItem) => selectedItem.name === item.name)
+
     if (isSelected) {
-      setSelectedRentalItems(selectedRentalItems.filter(selectedItem => selectedItem.name !== item.name))
+      setSelectedRentalItems(selectedRentalItems.filter((selectedItem) => selectedItem.name !== item.name))
     } else {
       setSelectedRentalItems([...selectedRentalItems, item])
     }
@@ -1431,8 +1480,8 @@ const TourDetails = () => {
 
   const calculateRentalTotal = () => {
     let total = 0
-    selectedRentalItems.forEach(item => {
-      const priceValue = parseInt(item.price.replace(/[^\d]/g, ''))
+    selectedRentalItems.forEach((item) => {
+      const priceValue = Number.parseInt(item.price.replace(/[^\d]/g, ""))
       total += priceValue * rentalDays
     })
     return `₹${total}`
@@ -1443,15 +1492,17 @@ const TourDetails = () => {
       alert("Please select a start date for your rental.")
       return
     }
-    
+
     if (selectedRentalItems.length === 0) {
       alert("Please select at least one item to rent.")
       return
     }
 
-    const itemsList = selectedRentalItems.map(item => item.name).join(", ")
-    alert(`Rental booking confirmed!\n\nShop: ${selectedShop.name}\nItems: ${itemsList}\nDuration: ${rentalDays} days\nStart Date: ${rentalStartDate}\nTotal: ${calculateRentalTotal()}`)
-    
+    const itemsList = selectedRentalItems.map((item) => item.name).join(", ")
+    alert(
+      `Rental booking confirmed!\n\nShop: ${selectedShop.name}\nItems: ${itemsList}\nDuration: ${rentalDays} days\nStart Date: ${rentalStartDate}\nTotal: ${calculateRentalTotal()}`,
+    )
+
     setSelectedShop(null)
     setSelectedRentalItems([])
     setRentalDays(1)
@@ -1477,6 +1528,41 @@ const TourDetails = () => {
         return "bg-blue-100 border-blue-400 text-blue-800"
     }
   }
+
+  // Function to validate image URLs
+  const validateImageUrl = (url) => {
+    if (!url) return false
+    return (
+      url.startsWith("http") &&
+      (url.endsWith(".jpg") ||
+        url.endsWith(".jpeg") ||
+        url.endsWith(".png") ||
+        url.endsWith(".webp") ||
+        url.endsWith(".gif") ||
+        url.includes("unsplash.com") ||
+        url.includes("randomuser.me"))
+    )
+  }
+
+  // Filter out invalid image URLs
+  useEffect(() => {
+    if (tour && tour.images) {
+      const validImages = tour.images.filter(validateImageUrl)
+      if (validImages.length !== tour.images.length) {
+        setTour((prev) => ({
+          ...prev,
+          images:
+            validImages.length > 0
+              ? validImages
+              : [
+                  "https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                  "https://images.unsplash.com/photo-1494564605686-2e931f77a8e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                  "https://images.unsplash.com/photo-1516638121-7d8c9e67a0f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                ],
+        }))
+      }
+    }
+  }, [tour])
 
   if (loading) return <div className="loading">Loading...</div>
   if (error) return <div className="error">Error: {error}</div>
@@ -1517,10 +1603,7 @@ const TourDetails = () => {
         >
           Local Guides
         </button>
-        <button
-          className={`tab-button ${activeTab === "gear" ? "active" : ""}`}
-          onClick={() => setActiveTab("gear")}
-        >
+        <button className={`tab-button ${activeTab === "gear" ? "active" : ""}`} onClick={() => setActiveTab("gear")}>
           Gear Rentals
         </button>
         <button
@@ -1534,15 +1617,23 @@ const TourDetails = () => {
       {activeTab === "details" && (
         <>
           <div className="tour-images">
-            {tour.images.map((image, index) => (
-              <img
-                key={index}
-                src={image || "/placeholder.svg"}
-                alt={`${tour.name} ${index + 1}`}
-                className="tour-image"
-                onClick={() => handleImageClick(image)}
-              />
-            ))}
+            {tour.images && tour.images.length > 0 ? (
+              tour.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image || "/placeholder.svg"}
+                  alt={`${tour.name} ${index + 1}`}
+                  className="tour-image"
+                  onClick={() => handleImageClick(image)}
+                  onError={(e) => {
+                    e.target.onerror = null
+                    e.target.src = "/placeholder.svg?height=250&width=400"
+                  }}
+                />
+              ))
+            ) : (
+              <div className="no-images-message">No images available for this tour</div>
+            )}
           </div>
           <section className="tour-section">
             <h2>About</h2>
@@ -1850,7 +1941,13 @@ const TourDetails = () => {
                       </div>
                       <div className="flex items-center">
                         <ExternalLink className="w-4 h-4 text-gray-600 mr-2" />
-                        <a href={`https://${shop.website}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline" onClick={(e) => e.stopPropagation()}>
+                        <a
+                          href={`https://${shop.website}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           {shop.website}
                         </a>
                       </div>
@@ -1904,9 +2001,9 @@ const TourDetails = () => {
                       <h4 className="text-lg font-semibold mb-2">Select Equipment to Rent:</h4>
                       <div className="rental-items-grid">
                         {selectedShop.items.map((item, index) => (
-                          <div 
-                            key={index} 
-                            className={`rental-item-card ${selectedRentalItems.some(selectedItem => selectedItem.name === item.name) ? 'selected' : ''}`}
+                          <div
+                            key={index}
+                            className={`rental-item-card ${selectedRentalItems.some((selectedItem) => selectedItem.name === item.name) ? "selected" : ""}`}
                             onClick={() => handleRentalItemToggle(item)}
                           >
                             <div className="flex items-center justify-between">
@@ -1944,18 +2041,15 @@ const TourDetails = () => {
                           Number of Days:
                         </label>
                         <div className="rental-days-selector">
-                          <button 
-                            className="rental-days-btn" 
+                          <button
+                            className="rental-days-btn"
                             onClick={() => setRentalDays(Math.max(1, rentalDays - 1))}
                             disabled={rentalDays <= 1}
                           >
                             -
                           </button>
                           <span className="rental-days-value">{rentalDays}</span>
-                          <button 
-                            className="rental-days-btn" 
-                            onClick={() => setRentalDays(rentalDays + 1)}
-                          >
+                          <button className="rental-days-btn" onClick={() => setRentalDays(rentalDays + 1)}>
                             +
                           </button>
                         </div>
@@ -1968,7 +2062,9 @@ const TourDetails = () => {
                             {selectedRentalItems.map((item, index) => (
                               <li key={index} className="rental-summary-item">
                                 <span>{item.name}</span>
-                                <span>{item.price} × {rentalDays} days</span>
+                                <span>
+                                  {item.price} × {rentalDays} days
+                                </span>
                               </li>
                             ))}
                           </ul>
@@ -1980,8 +2076,8 @@ const TourDetails = () => {
                       )}
 
                       <div className="rental-booking-actions">
-                        <button 
-                          className="book-rental-button" 
+                        <button
+                          className="book-rental-button"
                           onClick={handleRentalBooking}
                           disabled={selectedRentalItems.length === 0}
                         >
@@ -2049,3 +2145,5 @@ const TourDetails = () => {
 }
 
 export default TourDetails
+
+

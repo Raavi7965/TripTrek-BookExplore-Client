@@ -1,7 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const IndexPage = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate(); // Use useNavigate for navigation
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault(); // Prevent default form submission
+    navigate(`/tours?search=${searchTerm}`); // Route to All Tours page with search query
+  };
+
   return (
     <div style={styles.container}>
       {/* Adventure Tours Section */}
@@ -12,18 +20,23 @@ const IndexPage = () => {
           <p style={styles.discoverText}>Discover Adventures:</p>
           <p style={styles.journeyText}>Your Journey, Our Expertise!</p>
         </div>
-        <div style={styles.searchContainer}>
-          <input type="text" placeholder='Search for "Bengaluru"' style={styles.searchInput} />
-          <button style={styles.searchButton}>Search</button>
-        </div>
+        <form onSubmit={handleSearchSubmit} style={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder='Search for "Bengaluru"'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={styles.searchInput}
+          />
+          <button type="submit" style={styles.searchButton}>Search</button>
+        </form>
       </section>
 
       {/* Adventure Activities Section */}
       <header style={styles.header}>
         <p style={styles.subTitle}>SELECT TOURS FROM</p>
         <h1 style={styles.title}>30+ adventure activities</h1>
-        <nav style={styles.nav}>
-        </nav>
+        <nav style={styles.nav}></nav>
         <Link to="/tours">
           <button style={styles.exploreBtn}>EXPLORE TOURS</button>
         </Link>
@@ -61,7 +74,9 @@ const IndexPage = () => {
             <p>Rishikesh Adventure Tour</p>
             <p>Rated 4.00 (5)</p>
             <p>Starting from ₹15,500</p>
-            <button style={styles.bookNowButton}>Book Now</button>
+            <Link to="/tours/1"> {/* Assuming 1 is the tour ID for Rishikesh */}
+              <button style={styles.bookNowButton}>Book Now</button>
+            </Link>
           </div>
           <div style={styles.topRatedCard}>
             <img src="https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716400335/adventour-tour-images/fd2c1244899bedc2_tpyrmo.jpg" alt="Bangalore Trekking Adventure" style={styles.topRatedImage} />
@@ -69,7 +84,9 @@ const IndexPage = () => {
             <p>Bangalore Trekking Adventure</p>
             <p>Rated 4.00 (1)</p>
             <p>Starting from ₹3,000</p>
-            <button style={styles.bookNowButton}>Book Now</button>
+            <Link to="/tours/2"> {/* Assuming 2 is the tour ID for Bangalore Trekking */}
+              <button style={styles.bookNowButton}>Book Now</button>
+            </Link>
           </div>
           <div style={styles.topRatedCard}>
             <img src="https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716286536/adventour-tour-images/53cb901e908965cb_okybzk.jpg" alt="Manali Adventure Expedition" style={styles.topRatedImage} />
@@ -77,14 +94,15 @@ const IndexPage = () => {
             <p>Manali Adventure Expedition</p>
             <p>Rated 4.00 (1)</p>
             <p>Starting from ₹20,000</p>
-            <button style={styles.bookNowButton}>Book Now</button>
+            <Link to="/tours/3"> {/* Assuming 3 is the tour ID for Manali Adventure */} 
+              <button style={styles.bookNowButton}>Book Now</button>
+            </Link>
           </div>
         </div>
       </section>
     </div>
   );
 };
-
 const styles = {
   container: {
     fontFamily: "Arial, sans-serif",

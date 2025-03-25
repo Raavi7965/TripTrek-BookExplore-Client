@@ -48,6 +48,7 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser, logout }) 
         <Link to="/bookmarks" style={getLinkStyle("/bookmarks")} onClick={handleLoginRedirect}>Bookmarks</Link>
         <Link to="/bookings" style={getLinkStyle("/bookings")} onClick={handleLoginRedirect}>My Bookings</Link>
         <Link to="/dashboard" style={getLinkStyle("/dashboard")} onClick={handleLoginRedirect}>Contribute</Link>
+        <Link to="/group-adventure-planning" style={getLinkStyle("/group-adventure-planning")}>Group Adventure Planning</Link>
       </nav>
 
       {/* Right-aligned Register and Login (highlighted) */}
