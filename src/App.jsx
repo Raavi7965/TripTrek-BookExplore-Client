@@ -16,6 +16,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PaymentForm from './pages/PaymentForm';
 import ResetPassword from './pages/ResetPassword';
+import UserPage from './pages/UserPage';
 import './App.css';
 
 const App = () => {
@@ -47,7 +48,7 @@ const App = () => {
         <div className="routes-container">
           <Routes>
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
-            <Route path="/register" element={<Registration />} />
+            <Route path="/register" element={<Registration setUser={setUser} />} />
             <Route path="/" element={<IndexPage />} />
             <Route path="/tours" element={<AllTours bookmarks={bookmarks} setBookmarks={setBookmarks} />} />
             <Route path="/tours/:id" element={<TourDetails />} />
@@ -67,6 +68,7 @@ const App = () => {
               </ProtectedRoute>
             } />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/user" element={<UserPage user={user} />} />
           </Routes>
         </div>
         <Footer />
