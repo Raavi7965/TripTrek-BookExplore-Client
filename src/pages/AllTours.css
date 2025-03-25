@@ -147,7 +147,6 @@
   background-color: #0056b3;
 }
 
-<<<<<<< HEAD
 .star {
   color: lightgray;
   transition: color 0.2s;
@@ -177,11 +176,10 @@
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-=======
+
 .no-results {
   font-size: 1.5rem;
   color: #666;
   text-align: center;
   margin-top: 50px;
->>>>>>> 4a8d7bd6d2cb1de0cf9d8dae5783610bba250e4a
 }
