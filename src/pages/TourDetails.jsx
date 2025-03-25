@@ -1,532 +1,2051 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import './TourDetails.css';
+import { useEffect, useState, useRef, useCallback } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
+import "leaflet/dist/leaflet.css"
+import L from "leaflet"
+import "./TourDetails.css"
+import { AlertTriangle, CheckSquare, Square, Sun, Cloud, CloudRain, Thermometer, User, Star, Calendar, MapPin, Shield, Package, Users, PenToolIcon as Tool, ShoppingCart, CreditCard, Clock, Phone, Mail, ExternalLink } from 'lucide-react'
 
+// Fix for Leaflet marker icons
+delete L.Icon.Default.prototype._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+})
+
+// Location coordinates for each tour
+const tourLocations = {
+  1: { lat: 30.0869, lng: 78.2676, name: "Rishikesh" }, // Rishikesh
+  2: { lat: 32.2396, lng: 77.1887, name: "Manali" }, // Manali
+  3: { lat: 14.2191, lng: 74.1055, name: "Netrani Island" }, // Netrani Island
+  4: { lat: 12.9716, lng: 77.5946, name: "Bangalore" }, // Bangalore
+  5: { lat: 32.2462, lng: 78.2346, name: "Spiti Valley" }, // Spiti Valley
+  6: { lat: 10.2381, lng: 77.4892, name: "Kodaikanal" }, // Kodaikanal
+  7: { lat: 34.1526, lng: 77.5771, name: "Ladakh" }, // Ladakh
+  8: { lat: 15.2993, lng: 74.124, name: "Goa" }, // Goa
+  9: { lat: 25.467, lng: 91.3662, name: "Meghalaya" }, // Meghalaya
+  10: { lat: 26.9124, lng: 70.9128, name: "Jaisalmer" }, // Jaisalmer
+  11: { lat: 30.0869, lng: 78.2676, name: "Rishikesh" }, // White Water Rafting (Rishikesh)
+  12: { lat: 12.4244, lng: 75.7382, name: "Coorg" }, // Coorg
+  13: { lat: 34.17, lng: 77.58, name: "Zanskar" }, // Zanskar
+  14: { lat: 10.0889, lng: 77.0595, name: "Munnar" }, // Munnar
+  15: { lat: 17.9307, lng: 73.6477, name: "Mahabaleshwar" }, // Mahabaleshwar
+  16: { lat: 11.7401, lng: 92.6586, name: "Andaman" }, // Andaman
+  17: { lat: 11.4102, lng: 76.695, name: "Ooty" }, // Ooty
+  18: { lat: 30.0869, lng: 78.2676, name: "Rishikesh" }, // Bungee Jumping (Rishikesh)
+}
+
+// Add these data structures after the tourLocations object
+
+// Safety guidelines for each adventure type
+const safetyGuidelines = {
+  trekking: [
+    "Always carry a first aid kit and know how to use it",
+    "Inform someone about your trekking route and expected return time",
+    "Carry enough water and stay hydrated throughout the trek",
+    "Wear appropriate footwear with good grip",
+    "Check weather conditions before starting your trek",
+    "Carry a map, compass, or GPS device",
+    "Avoid trekking alone, especially in remote areas",
+  ],
+  rafting: [
+    "Always wear a life jacket and helmet",
+    "Listen carefully to the safety briefing before starting",
+    "Follow your guide's instructions at all times",
+    "Know how to swim or inform your guide if you can't",
+    "Secure all loose items and remove jewelry",
+    "Learn the proper paddling techniques",
+    "Know what to do if you fall into the water",
+  ],
+  diving: [
+    "Never dive alone - always use the buddy system",
+    "Maintain proper buoyancy control",
+    "Monitor your air supply frequently",
+    "Ascend slowly to avoid decompression sickness",
+    "Stay within your certification limits",
+    "Perform safety checks before every dive",
+    "Be aware of marine life and avoid touching coral",
+  ],
+  camping: [
+    "Set up camp in designated areas only",
+    "Store food properly to avoid attracting wildlife",
+    "Know how to safely set up and use camping equipment",
+    "Always fully extinguish campfires before sleeping or leaving",
+    "Carry a whistle or other signaling device",
+    "Be prepared for changing weather conditions",
+    "Leave no trace - pack out all trash",
+  ],
+  biking: [
+    "Always wear a helmet and appropriate protective gear",
+    "Maintain your bike and check it before each ride",
+    "Be visible to others - wear bright clothing and use lights",
+    "Follow traffic rules and use hand signals",
+    "Carry basic repair tools and know how to use them",
+    "Stay hydrated and carry energy snacks",
+    "Be aware of your surroundings and road conditions",
+  ],
+  paragliding: [
+    "Only fly with certified instructors and equipment",
+    "Check weather conditions and never fly in unstable weather",
+    "Complete a thorough pre-flight check of all equipment",
+    "Understand and follow all landing procedures",
+    "Maintain awareness of other aircraft and obstacles",
+    "Know emergency procedures and landing techniques",
+    "Never fly beyond your skill level",
+  ],
+  bungee: [
+    "Only jump with certified operators and equipment",
+    "Follow all instructions from the jump master",
+    "Disclose any medical conditions before jumping",
+    "Wear appropriate clothing and remove loose items",
+    "Listen carefully to the safety briefing",
+    "Maintain the correct body position during the jump",
+    "Don't hesitate to ask questions if you're unsure about anything",
+  ],
+  default: [
+    "Research your activity and location thoroughly before going",
+    "Check weather conditions before starting your adventure",
+    "Inform someone about your plans and expected return time",
+    "Carry appropriate safety equipment for your activity",
+    "Stay hydrated and bring sufficient food and water",
+    "Know your physical limits and don't push beyond them",
+    "Carry a first aid kit and know basic first aid procedures",
+  ],
+}
+
+// Packing checklist templates for different adventure types
+const packingChecklists = {
+  trekking: [
+    { id: 1, item: "Hiking boots", category: "Essentials", checked: false },
+    { id: 2, item: "Backpack (30-40L)", category: "Essentials", checked: false },
+    { id: 3, item: "Water bottle/hydration system", category: "Essentials", checked: false },
+    { id: 4, item: "First aid kit", category: "Safety", checked: false },
+    { id: 5, item: "Map/compass/GPS", category: "Navigation", checked: false },
+    { id: 6, item: "Weather-appropriate clothing", category: "Clothing", checked: false },
+    { id: 7, item: "Rain jacket/poncho", category: "Weather", checked: false },
+    { id: 8, item: "Sunscreen", category: "Health", checked: false },
+    { id: 9, item: "Insect repellent", category: "Health", checked: false },
+    { id: 10, item: "Headlamp/flashlight", category: "Equipment", checked: false },
+    { id: 11, item: "Snacks/energy bars", category: "Food", checked: false },
+    { id: 12, item: "Trekking poles", category: "Equipment", checked: false },
+  ],
+  rafting: [
+    { id: 1, item: "Quick-dry clothing", category: "Clothing", checked: false },
+    { id: 2, item: "Water shoes", category: "Essentials", checked: false },
+    { id: 3, item: "Waterproof bag", category: "Equipment", checked: false },
+    { id: 4, item: "Sunscreen", category: "Health", checked: false },
+    { id: 5, item: "Sunglasses with strap", category: "Accessories", checked: false },
+    { id: 6, item: "Towel", category: "Essentials", checked: false },
+    { id: 7, item: "Change of clothes", category: "Clothing", checked: false },
+    { id: 8, item: "Water bottle", category: "Essentials", checked: false },
+  ],
+  diving: [
+    { id: 1, item: "Swimsuit", category: "Clothing", checked: false },
+    { id: 2, item: "Towel", category: "Essentials", checked: false },
+    { id: 3, item: "Sunscreen", category: "Health", checked: false },
+    { id: 4, item: "Certification card", category: "Documentation", checked: false },
+    { id: 5, item: "Logbook", category: "Documentation", checked: false },
+    { id: 6, item: "Mask, snorkel, fins (if not renting)", category: "Equipment", checked: false },
+    { id: 7, item: "Wetsuit (if not renting)", category: "Equipment", checked: false },
+    { id: 8, item: "Underwater camera", category: "Optional", checked: false },
+  ],
+  camping: [
+    { id: 1, item: "Tent", category: "Shelter", checked: false },
+    { id: 2, item: "Sleeping bag", category: "Shelter", checked: false },
+    { id: 3, item: "Sleeping pad", category: "Shelter", checked: false },
+    { id: 4, item: "Headlamp/flashlight", category: "Equipment", checked: false },
+    { id: 5, item: "Multi-tool or knife", category: "Tools", checked: false },
+    { id: 6, item: "Cooking equipment", category: "Food", checked: false },
+    { id: 7, item: "Food supplies", category: "Food", checked: false },
+    { id: 8, item: "Water container", category: "Essentials", checked: false },
+    { id: 9, item: "First aid kit", category: "Safety", checked: false },
+    { id: 10, item: "Fire starter", category: "Equipment", checked: false },
+    { id: 11, item: "Insect repellent", category: "Health", checked: false },
+    { id: 12, item: "Weather-appropriate clothing", category: "Clothing", checked: false },
+  ],
+  biking: [
+    { id: 1, item: "Helmet", category: "Safety", checked: false },
+    { id: 2, item: "Cycling shorts/pants", category: "Clothing", checked: false },
+    { id: 3, item: "Cycling gloves", category: "Accessories", checked: false },
+    { id: 4, item: "Water bottle", category: "Essentials", checked: false },
+    { id: 5, item: "Bike repair kit", category: "Tools", checked: false },
+    { id: 6, item: "Spare tube", category: "Tools", checked: false },
+    { id: 7, item: "Bike lock", category: "Security", checked: false },
+    { id: 8, item: "Sunglasses", category: "Accessories", checked: false },
+    { id: 9, item: "Sunscreen", category: "Health", checked: false },
+    { id: 10, item: "Energy snacks", category: "Food", checked: false },
+  ],
+  paragliding: [
+    { id: 1, item: "Comfortable clothing", category: "Clothing", checked: false },
+    { id: 2, item: "Sturdy shoes", category: "Essentials", checked: false },
+    { id: 3, item: "Sunglasses", category: "Accessories", checked: false },
+    { id: 4, item: "Sunscreen", category: "Health", checked: false },
+    { id: 5, item: "Light jacket/windbreaker", category: "Clothing", checked: false },
+    { id: 6, item: "Camera (secure strap)", category: "Optional", checked: false },
+    { id: 7, item: "Water bottle", category: "Essentials", checked: false },
+  ],
+  default: [
+    { id: 1, item: "Appropriate clothing", category: "Clothing", checked: false },
+    { id: 2, item: "Water bottle", category: "Essentials", checked: false },
+    { id: 3, item: "Sunscreen", category: "Health", checked: false },
+    { id: 4, item: "First aid kit", category: "Safety", checked: false },
+    { id: 5, item: "Snacks", category: "Food", checked: false },
+    { id: 6, item: "Camera", category: "Optional", checked: false },
+    { id: 7, item: "Phone/communication device", category: "Communication", checked: false },
+    { id: 8, item: "Identification", category: "Documentation", checked: false },
+  ],
+}
+
+// Mock data for local guides
+const localGuides = {
+  Rishikesh: [
+    {
+      id: 1,
+      name: "Rahul Sharma",
+      specialization: "Rafting & Trekking",
+      experience: "10 years",
+      languages: ["English", "Hindi"],
+      rating: 4.8,
+      reviews: 124,
+      price: "₹2,500/day",
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+      image: "https://randomuser.me/api/portraits/men/32.jpg",
+      contact: "+91 98765 43210",
+    },
+    {
+      id: 2,
+      name: "Priya Patel",
+      specialization: "Adventure Sports & Yoga",
+      experience: "7 years",
+      languages: ["English", "Hindi", "German"],
+      rating: 4.9,
+      reviews: 98,
+      price: "₹2,800/day",
+      availability: ["Wed", "Thu", "Fri", "Sat", "Sun"],
+      image: "https://randomuser.me/api/portraits/women/44.jpg",
+      contact: "+91 87654 32109",
+    },
+  ],
+  Manali: [
+    {
+      id: 3,
+      name: "Vikram Singh",
+      specialization: "Snow Trekking & Skiing",
+      experience: "12 years",
+      languages: ["English", "Hindi", "Punjabi"],
+      rating: 4.7,
+      reviews: 156,
+      price: "₹3,000/day",
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      image: "https://randomuser.me/api/portraits/men/22.jpg",
+      contact: "+91 76543 21098",
+    },
+  ],
+  Ladakh: [
+    {
+      id: 4,
+      name: "Tenzin Dorje",
+      specialization: "Mountain Biking & High Altitude Trekking",
+      experience: "15 years",
+      languages: ["English", "Hindi", "Ladakhi", "Tibetan"],
+      rating: 4.9,
+      reviews: 210,
+      price: "₹3,500/day",
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+      image: "https://randomuser.me/api/portraits/men/67.jpg",
+      contact: "+91 65432 10987",
+    },
+  ],
+  Goa: [
+    {
+      id: 5,
+      name: "Carlos Fernandes",
+      specialization: "Water Sports & Scuba Diving",
+      experience: "9 years",
+      languages: ["English", "Portuguese", "Hindi"],
+      rating: 4.6,
+      reviews: 87,
+      price: "₹2,700/day",
+      availability: ["Wed", "Thu", "Fri", "Sat", "Sun"],
+      image: "https://randomuser.me/api/portraits/men/52.jpg",
+      contact: "+91 54321 09876",
+    },
+  ],
+  Andaman: [
+    {
+      id: 6,
+      name: "Anita Roy",
+      specialization: "Scuba Diving & Marine Life",
+      experience: "8 years",
+      languages: ["English", "Hindi", "Bengali"],
+      rating: 4.8,
+      reviews: 112,
+      price: "₹3,200/day",
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      image: "https://randomuser.me/api/portraits/women/28.jpg",
+      contact: "+91 43210 98765",
+    },
+  ],
+  default: [
+    {
+      id: 7,
+      name: "Ajay Kumar",
+      specialization: "General Adventure Guide",
+      experience: "5 years",
+      languages: ["English", "Hindi"],
+      rating: 4.5,
+      reviews: 65,
+      price: "₹2,000/day",
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      image: "https://randomuser.me/api/portraits/men/42.jpg",
+      contact: "+91 32109 87654",
+    },
+  ],
+}
+
+// Mock weather alerts data
+const weatherAlerts = {
+  Rishikesh: [
+    {
+      type: "Rainfall",
+      message: "Moderate to heavy rainfall expected in the next 48 hours. Rafting activities may be affected.",
+      severity: "moderate",
+      startDate: "2024-03-25",
+      endDate: "2024-03-27",
+    },
+  ],
+  Manali: [
+    {
+      type: "Snowfall",
+      message: "Heavy snowfall expected at higher elevations. Some trekking routes may be closed.",
+      severity: "high",
+      startDate: "2024-03-24",
+      endDate: "2024-03-26",
+    },
+    {
+      type: "Road Closure",
+      message: "Rohtang Pass closed due to snow accumulation. Alternative routes available.",
+      severity: "high",
+      startDate: "2024-03-20",
+      endDate: "2024-04-15",
+    },
+  ],
+  "Spiti Valley": [
+    {
+      type: "Landslide Risk",
+      message: "Increased risk of landslides due to recent rainfall. Exercise caution on mountain roads.",
+      severity: "high",
+      startDate: "2024-03-23",
+      endDate: "2024-03-28",
+    },
+  ],
+  Ladakh: [
+    {
+      type: "Cold Wave",
+      message: "Extreme cold conditions expected. Night temperatures may drop below -15°C.",
+      severity: "high",
+      startDate: "2024-03-25",
+      endDate: "2024-03-30",
+    },
+  ],
+  Goa: [
+    {
+      type: "High Tide",
+      message: "High tide warning for coastal areas. Water sports activities may be restricted.",
+      severity: "moderate",
+      startDate: "2024-03-26",
+      endDate: "2024-03-28",
+    },
+  ],
+  Andaman: [
+    {
+      type: "Strong Currents",
+      message: "Strong underwater currents reported. Diving activities may be restricted to certain sites.",
+      severity: "moderate",
+      startDate: "2024-03-24",
+      endDate: "2024-03-27",
+    },
+  ],
+}
+
+// Gear and Equipment Rental data
+const gearRentals = {
+  trekking: [
+    {
+      id: 1,
+      name: "Mountain Gear Rentals",
+      location: "Central Market",
+      items: [
+        { name: "Trekking Poles", price: "₹150/day", available: true },
+        { name: "Backpack (40L)", price: "₹200/day", available: true },
+        { name: "Hiking Boots", price: "₹250/day", available: true },
+        { name: "Sleeping Bag", price: "₹300/day", available: true },
+        { name: "Tent (2-person)", price: "₹500/day", available: true },
+      ],
+      rating: 4.7,
+      reviews: 89,
+      contact: "+91 98765 43210",
+      website: "www.mountaingear.com",
+      hours: "9:00 AM - 7:00 PM",
+    },
+    {
+      id: 2,
+      name: "Trek Essentials",
+      location: "Hill Road",
+      items: [
+        { name: "Trekking Poles", price: "₹180/day", available: true },
+        { name: "Backpack (50L)", price: "₹250/day", available: true },
+        { name: "GPS Device", price: "₹350/day", available: true },
+        { name: "Camping Stove", price: "₹200/day", available: true },
+        { name: "Headlamp", price: "₹100/day", available: true },
+      ],
+      rating: 4.5,
+      reviews: 65,
+      contact: "+91 87654 32109",
+      website: "www.trekessentials.com",
+      hours: "8:00 AM - 8:00 PM",
+    },
+  ],
+  rafting: [
+    {
+      id: 3,
+      name: "River Rapids Gear",
+      location: "Riverside Market",
+      items: [
+        { name: "Life Jacket", price: "₹150/day", available: true },
+        { name: "Helmet", price: "₹100/day", available: true },
+        { name: "Wetsuit", price: "₹300/day", available: true },
+        { name: "Waterproof Bag", price: "₹150/day", available: true },
+        { name: "Water Shoes", price: "₹120/day", available: true },
+      ],
+      rating: 4.8,
+      reviews: 112,
+      contact: "+91 76543 21098",
+      website: "www.riverrapidsgear.com",
+      hours: "7:00 AM - 6:00 PM",
+    },
+  ],
+  diving: [
+    {
+      id: 4,
+      name: "Deep Blue Dive Shop",
+      location: "Beach Road",
+      items: [
+        { name: "Mask & Snorkel", price: "₹200/day", available: true },
+        { name: "Fins", price: "₹250/day", available: true },
+        { name: "BCD", price: "₹500/day", available: true },
+        { name: "Regulator", price: "₹450/day", available: true },
+        { name: "Wetsuit", price: "₹350/day", available: true },
+        { name: "Underwater Camera", price: "₹800/day", available: true },
+      ],
+      rating: 4.9,
+      reviews: 156,
+      contact: "+91 65432 10987",
+      website: "www.deepbluedive.com",
+      hours: "8:00 AM - 7:00 PM",
+    },
+  ],
+  camping: [
+    {
+      id: 5,
+      name: "Camp Essentials",
+      location: "Market Square",
+      items: [
+        { name: "Tent (2-person)", price: "₹500/day", available: true },
+        { name: "Tent (4-person)", price: "₹800/day", available: true },
+        { name: "Sleeping Bag", price: "₹300/day", available: true },
+        { name: "Camping Stove", price: "₹200/day", available: true },
+        { name: "Camping Chair", price: "₹100/day", available: true },
+        { name: "Cooler", price: "₹150/day", available: true },
+      ],
+      rating: 4.6,
+      reviews: 78,
+      contact: "+91 54321 09876",
+      website: "www.campassentials.com",
+      hours: "9:00 AM - 8:00 PM",
+    },
+  ],
+  biking: [
+    {
+      id: 6,
+      name: "Wheel Deal Rentals",
+      location: "Main Street",
+      items: [
+        { name: "Mountain Bike", price: "₹600/day", available: true },
+        { name: "Helmet", price: "₹150/day", available: true },
+        { name: "Bike Lock", price: "₹100/day", available: true },
+        { name: "Repair Kit", price: "₹150/day", available: true },
+        { name: "GPS Device", price: "₹350/day", available: true },
+      ],
+      rating: 4.7,
+      reviews: 92,
+      contact: "+91 43210 98765",
+      website: "www.wheeldeal.com",
+      hours: "8:00 AM - 7:00 PM",
+    },
+  ],
+  paragliding: [
+    {
+      id: 7,
+      name: "Sky High Equipment",
+      location: "Hill Station Road",
+      items: [
+        { name: "GoPro Camera", price: "₹800/day", available: true },
+        { name: "Flying Suit", price: "₹400/day", available: true },
+        { name: "Helmet", price: "₹200/day", available: true },
+        { name: "Gloves", price: "₹150/day", available: true },
+      ],
+      rating: 4.8,
+      reviews: 45,
+      contact: "+91 32109 87654",
+      website: "www.skyhigh.com",
+      hours: "7:00 AM - 5:00 PM",
+    },
+  ],
+  bungee: [
+    {
+      id: 8,
+      name: "Extreme Sports Gear",
+      location: "Adventure Zone",
+      items: [
+        { name: "GoPro Camera", price: "₹800/day", available: true },
+        { name: "Sports Shoes", price: "₹300/day", available: true },
+        { name: "Sportswear", price: "₹250/day", available: true },
+      ],
+      rating: 4.5,
+      reviews: 38,
+      contact: "+91 21098 76543",
+      website: "www.extremesportsgear.com",
+      hours: "8:00 AM - 6:00 PM",
+    },
+  ],
+  default: [
+    {
+      id: 9,
+      name: "Adventure Essentials",
+      location: "Town Center",
+      items: [
+        { name: "Backpack", price: "₹200/day", available: true },
+        { name: "Water Bottle", price: "₹50/day", available: true },
+        { name: "First Aid Kit", price: "₹100/day", available: true },
+        { name: "Portable Charger", price: "₹150/day", available: true },
+        { name: "Binoculars", price: "₹250/day", available: true },
+      ],
+      rating: 4.4,
+      reviews: 56,
+      contact: "+91 10987 65432",
+      website: "www.adventureessentials.com",
+      hours: "9:00 AM - 8:00 PM",
+    },
+  ],
+}
+
+// Updated mockTourData with consistent images for all tours
 const mockTourData = {
   1: {
     id: 1,
-    name: 'Rishikesh Adventure Tour',
+    name: "Rishikesh River Rafting",
+    location: "Rishikesh",
+    description:
+      "Experience the thrill of white water rafting in the Ganges. Suitable for beginners and experienced rafters alike.",
+    price: "₹1,500",
+    discountedPrice: "₹1,200",
     images: [
-      'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1706961565/adventour-tour-images/7c8b56c65a2bf64c_snkwfa.jpg',
-      'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1706961566/adventour-tour-images/8d203e605cfd5118_mlqx9r.jpg',
-      'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1706961575/adventour-tour-images/ff2e6398f6ffdc99_wru1vu.jpg'
+      "https://images.unsplash.com/photo-1560523799-99a86c4c9c7c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1604335889388-9855925456ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1541848756-a6faeff29c09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Rishikesh is a popular destination for adventure sports...',
-    price: '₹15,500',
-    discountedPrice: '₹14,500',
-    itinerary: ['Day 1: Arrival', 'Day 2: Rafting', 'Day 3: Trekking', 'Day 4: Departure'],
+    itinerary: [
+      "Arrival in Rishikesh",
+      "Safety briefing and rafting instructions",
+      "River rafting session (3 hours)",
+      "Lunch by the river",
+      "Departure",
+    ],
     reviews: [
       {
-        user: 'Tushar',
+        user: "Alice",
+        date: "2024-03-15",
         rating: 5,
-        type: 'Friends',
-        title: 'A Thrilling 3-Day Journey',
-        comment: 'Embark on an unforgettable 3-Day Rishikesh Adventure Tour...',
-        date: '29 May 2024',
+        comment: "Amazing experience! The guides were professional and the scenery was breathtaking.",
         images: [
-          'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716974597/tour-review-images/6c5f9ff8ad594285_w0p393.jpg',
-          'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716974597/tour-review-images/06ad944afe6f66e3_hp7log.jpg']
-      }
-    ]
+          "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+        ],
+        title: "Best Rafting Trip Ever!",
+      },
+      {
+        user: "Bob",
+        date: "2024-03-10",
+        rating: 4,
+        comment: "Good fun, but the water was a bit cold. Overall, a great day out.",
+        title: "Fun but Cold",
+      },
+    ],
   },
   2: {
     id: 2,
-    name: 'Manali Snow Adventure',
+    name: "Manali Trekking Adventure",
+    location: "Manali",
+    description:
+      "Explore the scenic trails around Manali with our guided trekking tours. Suitable for all fitness levels.",
+    price: "₹2,000",
+    discountedPrice: "₹1,800",
     images: [
-      'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716286536/adventour-tour-images/53cb901e908965cb_okybzk.jpg',
-      'https://www.seawatersports.com/images/activies/slide/trekking-in-manali-package.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVOE9bL1J7VU-hm07fCd2Bun59UcReXnQfUw&s'
+      "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1501785888024-9291476ff2c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Experience the thrill of snow-clad mountains in Manali...',
-    price: '₹18,000',
-    discountedPrice: '₹16,500',
-    itinerary: ['Day 1: Arrival', 'Day 2: Skiing', 'Day 3: Snow Trekking', 'Day 4: Departure'],
+    itinerary: [
+      "Arrival in Manali",
+      "Acclimatization walk",
+      "Trek to Hadimba Temple",
+      "Trek to Jogini Falls",
+      "Departure",
+    ],
     reviews: [
       {
-        user: 'Ravi',
+        user: "Charlie",
+        date: "2024-03-20",
+        rating: 5,
+        comment: "Incredible views and well-organized trek. Highly recommended!",
+        title: "Amazing Views",
+      },
+      {
+        user: "Diana",
+        date: "2024-03-18",
         rating: 4,
-        type: 'Couple',
-        title: 'Romantic and Adventurous',
-        comment: 'Manali was breathtaking, and the skiing experience was unmatched!',
-        date: '10 Jan 2024',
-        images: []
-      }
-    ]
+        comment: "The trek was a bit challenging, but the scenery made it worth it.",
+        title: "Challenging but Rewarding",
+      },
+    ],
   },
   3: {
     id: 3,
-    name: 'Netrani Island Scuba Diving',
+    name: "Netrani Island Scuba Diving",
+    location: "Netrani Island",
+    description:
+      "Discover the underwater world of Netrani Island with our scuba diving excursions. Suitable for certified divers.",
+    price: "₹3,000",
+    discountedPrice: "₹2,700",
     images: [
-      'https://dtmag.com/wp-content/uploads/2015/09/iStock_000028077202_600.jpg',
-      'https://b3619545.smushcdn.com/3619545/wp-content/uploads/2023/09/Deep-Dive-Dubai-kids-first-Nomad-dive-1024x683.jpg?lossy=2&strip=1&webp=1',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO6YE5QJl-OMDJWJHdj96ImRx-5_jRJ3WOPA&s'
+      "https://images.unsplash.com/photo-1579621954041-686b65981809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
+      "https://images.unsplash.com/photo-1552510388-4df5185794fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1563795586564-3723423dd404?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Dive into the crystal-clear waters of Netrani Island and explore vibrant marine life.',
-    price: '₹18,000',
-    discountedPrice: '₹16,500',
-    itinerary: ['Day 1: Arrival', 'Day 2: Scuba Diving Training', 'Day 3: Deep Sea Dive', 'Day 4: Departure'],
+    itinerary: [
+      "Arrival at dive site",
+      "Dive briefing and equipment check",
+      "Scuba diving session (45 minutes)",
+      "Debriefing and logbook entry",
+      "Departure",
+    ],
     reviews: [
       {
-        user: 'Ravi',
+        title: "Amazing Dive!",
+        user: "Eve",
+        date: "2024-03-25",
+        rating: 5,
+        comment: "The coral reefs were stunning, and the marine life was abundant. A must-do for divers!",
+        images: [
+          "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+        ],
+      },
+      {
+        title: "Good Experience",
+        user: "Frank",
+        date: "2024-03-22",
         rating: 4,
-        type: 'Couple',
-        title: 'Romantic and Adventurous',
-        comment: 'Manali was breathtaking, and the skiing experience was unmatched!',
-        date: '10 Jan 2024',
-        images: []
-      }
-    ]
+        comment: "Visibility was a bit low, but overall a good diving experience.",
+        images: [],
+      },
+    ],
   },
   4: {
     id: 4,
-    name: 'Bangalore Trekking Adventure',
+    name: "Bangalore City Tour",
+    location: "Bangalore",
+    description:
+      "Explore the Garden City with our guided city tours. Visit historical landmarks and cultural attractions.",
+    price: "₹1,000",
+    discountedPrice: "₹800",
     images: [
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzKDuFYI3r2jlWU_S3-lip8iKZ_KGE3ruLgQ&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr2sN2GH2RHoTyj2fEmieGMU1EsrCL_2IQbF43DxMZwiHXOJ6MZN6Pm6MpiWf0EL5ApwY&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7kCSAv9aQM1CMcwQ1Gb91W9-n7FN7GjgIKzpsRS9ujkriC7kO-k2DXM4QRKKohWvcHAQ&usqp=CAU'
+      "https://images.unsplash.com/photo-1600987334511-65a5c69eaffc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1617588455974-2cd33b4ca409?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1628977434344-ba978411544c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Embark on an exciting trek to Savandurga, one of the largest monolith hills in Asia. Experience breathtaking sunrise views, explore ancient temples, and trek through lush green trails surrounded by nature..',
-    price: '₹18,000',
-    discountedPrice: '₹16,500',
-    itinerary: ['Day 1: Arrival', 'Day 2: base camp, briefing, and warm-up session', 'Day 3: Early morning trek to the peak, enjoy panoramic views.', 'Day 4: Departure'],
+    itinerary: [
+      "Visit Bangalore Palace",
+      "Explore Tipu Sultan's Summer Palace",
+      "Visit Lal Bagh Botanical Garden",
+      "Explore Vidhana Soudha",
+      "Departure",
+    ],
     reviews: [
       {
-        user: 'Ravi',
+        title: "Great City Tour",
+        user: "Grace",
+        date: "2024-03-28",
+        rating: 5,
+        comment: "The tour guide was knowledgeable, and the city is beautiful. Highly recommended!",
+        images: [],
+      },
+      {
+        title: "Informative Tour",
+        user: "Henry",
+        date: "2024-03-25",
         rating: 4,
-        type: 'Couple',
-        title: 'Romantic and Adventurous',
-        comment: 'Manali was breathtaking, and the skiing experience was unmatched!',
-        date: '10 Jan 2024',
-        images: []
-      }
-    ]
+        comment: "The tour was informative, but the traffic was a bit heavy.",
+        images: [],
+      },
+    ],
   },
   5: {
     id: 5,
-    name: 'Spiti Valley Trek',
+    name: "Spiti Valley Adventure",
+    location: "Spiti Valley",
+    description:
+      "Embark on an unforgettable journey through the rugged terrain of Spiti Valley. Experience the raw beauty of the Himalayas.",
+    price: "₹4,500",
+    discountedPrice: "₹4,000",
     images: [
-      'https://www.himalayanhikers.in/wp-content/uploads/2023/05/WhatsApp-Image-2023-05-21-at-04.45.52-1.jpeg',
-      'https://www.potala-himalaya.com/uploads/potala_himalaya/package/main/658a970a1aa01173_spiti_valley_tour_2024.png',
-      'https://www.treksandtrails.org/system/images/000/271/930/94cb5f26c417261fd18fb18232d721b6/original/Spiti-homestay-trek.jpg?1648718310'
+      "https://images.unsplash.com/photo-1507518858883-755ca39f3bc0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1547754980-c1f3906fba51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1547754980-c1f3906fba51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Embark on an unforgettable trek through the remote and breathtaking landscapes of Spiti Valley. Experience rugged terrains, ancient monasteries, and stunning high-altitude villages.',
-    price: '₹8,500',
-    discountedPrice: '₹8,000',
-    itinerary: ['Day 1: Arrival in Manali, acclimatization & briefing', 'Day 2: Trek to Key Monastery & Kibber village, breathtaking valley views', 'Day 3: Early morning trek to the peak, enjoy panoramic views.', 'Day 4: Trek to Hikkim (world’s highest post office), Langza, and back', 'Day 5: Explore Dhankar Monastery & Pin Valley','Day 6: Return journey & departure'],
+    itinerary: ["Arrival in Spiti Valley", "Visit Key Monastery", "Explore Chandratal Lake", "Visit Kaza", "Departure"],
     reviews: [
       {
-        user: 'Priya',
-        rating: 4.5,
-        type: 'Couple',
-        title: 'A Soul-Stirring Experience!',
-        comment: 'Spiti Valley’s beauty is surreal! Trekking through the villages and monasteries felt like stepping into another world. Highly recommended!',
-        date: '17 Jan 2024',
-        images: []
-      }
-    ]
+        title: "Unforgettable Trip",
+        user: "Ivy",
+        date: "2024-04-01",
+        rating: 5,
+        comment: "Spiti Valley is a hidden gem. The landscapes are breathtaking, and the culture is fascinating.",
+        images: [],
+      },
+      {
+        title: "Amazing Experience",
+        user: "Jack",
+        date: "2024-03-29",
+        rating: 4,
+        comment: "The roads are rough, but the journey is worth it. Highly recommended for adventure seekers.",
+        images: [],
+      },
+    ],
   },
   6: {
     id: 6,
-    name: 'Kodai Lake Boating',
+    name: "Kodaikanal Adventure",
+    location: "Kodaikanal",
+    description:
+      "Explore the beauty of Kodaikanal with our guided tours. Visit historical landmarks and cultural attractions.",
+    price: "₹2,500",
+    discountedPrice: "₹2,200",
     images: [
-      'https://c8.alamy.com/comp/GWBM2F/boating-in-kodaikanal-lake-GWBM2F.jpg',
-      'https://www.ttdconline.com/_next/boat-house/kodaikanal/3.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPVNs3L7j0UI3HldBMRbS6qaTEwSKAzFEUeA&s'
+      "https://images.unsplash.com/photo-1617588455974-2cd33b4ca409?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1628977434344-ba978411544c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1600987334511-65a5c69eaffc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Experience a serene and picturesque boating adventure at Kodai Lake, the heart of Kodaikanal. Surrounded by lush green hills and misty landscapes, enjoy a peaceful ride on the tranquil waters. Choose from rowboats, pedal boats, or shikaras for a memorable experience with family, friends, or a loved one.,',
-    price: '₹1,800',
-    discountedPrice: '₹1,500',
-    itinerary: ['Day 1: Arrival in Kodaikanal, local sightseeing', 'Day 2: Enjoy boating at Kodai Lake, cycle around the lake, visit Coaker’s Walk.', 'Day 3: Explore Bryant Park, Green Valley View, and Pillar Rocks','Day 4: Departure'],
+    itinerary: [
+      "Visit Kodaikanal Lake",
+      "Explore Coaker's Walk",
+      "Visit Bryant Park",
+      "Explore Silver Cascade Falls",
+      "Departure",
+    ],
     reviews: [
       {
-        user: 'Ravi',
+        title: "Great City Tour",
+        user: "Grace",
+        date: "2024-03-28",
+        rating: 5,
+        comment: "The tour guide was knowledgeable, and the city is beautiful. Highly recommended!",
+        images: [],
+      },
+      {
+        title: "Informative Tour",
+        user: "Henry",
+        date: "2024-03-25",
         rating: 4,
-        type: 'Couple',
-        title: 'Romantic and Peaceful',
-        comment: 'Boating at Kodai Lake was the highlight of our trip! The misty hills, cool breeze, and calm waters made it a magical experience.',
-        date: '01 feb 2024',
-        images: []
-      }
-    ]
+        comment: "The tour was informative, but the traffic was a bit heavy.",
+        images: [],
+      },
+    ],
   },
   7: {
     id: 7,
-    name: 'Ladakh Bike Tour',
+    name: "Ladakh Adventure",
+    location: "Ladakh",
+    description:
+      "Embark on an unforgettable journey through the rugged terrain of Ladakh. Experience the raw beauty of the Himalayas.",
+    price: "₹5,500",
+    discountedPrice: "₹5,000",
     images: [
-      'https://imgcld.yatra.com/ytimages/image/upload/v1517482103/AdvNation/ANN_TRP530/Bike-Expedition-Ladakh_1439472639_F6YkoV.jpg',
-      'https://vl-prod-static.b-cdn.net/system/images/000/300/878/160b26bc2e280d83db6ada2224d6107e/x800gt/DSC00399.jpg?1594207788',
-      'https://discoverlehladakh.in/wp-content/uploads/2021/02/Ladakh-bike-tour-package-banner.jpg'
+      "https://images.unsplash.com/photo-1507518858883-755ca39f3bc0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1547754980-c1f3906fba51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1547754980-c1f3906fba51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Embark on an exhilarating Ladakh Bike Tour, riding through some of the world’s highest motorable passes. Witness breathtaking landscapes, explore ancient monasteries, and experience the thrill of adventure as you traverse rugged mountain terrains. From the serene Pangong Lake to the iconic Khardung La, this journey promises an unforgettable experience.',
-    price: '₹25,000',
-    discountedPrice: '₹23,500',
-    itinerary: ['Day 1: Arrival in Leh, acclimatization & local sightseeing', 'Day 2: Ride to Nubra Valley via Khardung La (world’s highest motorable pass)', 'Day 3: Explore Nubra, ride to Pangong Lake via Shyok Valley', 'Day 4: Sunrise at Pangong, ride back to Leh via Chang La Pass','Day 5: Departure'],
+    itinerary: ["Arrival in Ladakh", "Visit Key Monastery", "Explore Chandratal Lake", "Visit Kaza", "Departure"],
     reviews: [
       {
-        user: 'Srinivas',
-        rating: 4.5,
-        type: 'Couple',
-        title: 'Thrilling and Scenic Ride!',
-        comment: 'Ladakh’s landscapes are surreal! The bike ride through high-altitude passes and stunning valleys made it an adventure of a lifetime.',
-        date: '19 Dec 2023',
-        images: []
-      }
-    ]
+        title: "Unforgettable Trip",
+        user: "Ivy",
+        date: "2024-04-01",
+        rating: 5,
+        comment: "Spiti Valley is a hidden gem. The landscapes are breathtaking, and the culture is fascinating.",
+        images: [],
+      },
+      {
+        title: "Amazing Experience",
+        user: "Jack",
+        date: "2024-03-29",
+        rating: 4,
+        comment: "The roads are rough, but the journey is worth it. Highly recommended for adventure seekers.",
+        images: [],
+      },
+    ],
   },
+  // Adding the missing tours
   8: {
     id: 8,
-    name: 'Bangalore Trekking Adventure',
+    name: "Goa Water Sports",
+    location: "Goa",
+    description: "Experience thrilling water sports in the beautiful beaches of Goa. Activities include jet skiing, parasailing, and banana boat rides.",
+    price: "₹2,000",
+    discountedPrice: "₹1,800",
     images: [
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQk9Hm6kxpccRODqV829QFsRu9k4eOwZMMu6g&s',
-      'https://farm9.staticflickr.com/8227/29070149562_2ba5c527fd_z.jpg',
-      'https://blog.moustachescapes.com/wp-content/uploads/2022/11/608f747c5a123_1620014204-1.jpg'
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1596464716127-f2a82984de30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Experience the thrill of Goa Water Sports, where adventure meets the sea! Dive into an action-packed day with activities like jet skiing, parasailing, banana boat rides, and scuba diving. Soak in the stunning coastal views, feel the rush of adrenaline, and create unforgettable memories on Goa’s pristine beaches.',
-    price: '₹3,5000',
-    discountedPrice: '₹3,000',
-    itinerary: ['Day 1: Arrival in Goa, beach exploration, and local sightseeing', 'Day 2: Water sports adventure – jet skiing, parasailing, banana boat ride, and bumper ride', 'Day 3: Day 3: Scuba diving or snorkeling, dolphin spotting, and sunset cruise', 'Day 4: Departure'],
+    itinerary: [
+      "Arrival at Baga Beach",
+      "Safety briefing and instructions",
+      "Jet skiing session (30 minutes)",
+      "Parasailing experience (15 minutes)",
+      "Banana boat ride (15 minutes)",
+      "Departure",
+    ],
     reviews: [
       {
-        user: 'Durga',
+        title: "Amazing Water Sports Experience",
+        user: "Michael",
+        date: "2024-03-15",
+        rating: 5,
+        comment: "Had an incredible time with the water sports package. The instructors were professional and ensured safety throughout.",
+        images: [],
+      },
+      {
+        title: "Fun Day at the Beach",
+        user: "Sarah",
+        date: "2024-03-10",
         rating: 4,
-        type: 'Couple',
-        title: 'Thrilling & Fun Experience!',
-        comment: 'Goa’s water sports were an absolute blast! Parasailing gave us the best aerial view of the beach, and jet skiing was pure adrenaline. A must-try experience!',
-        date: '12 Mar 2024',
-        images: []
-      }
-    ]
+        comment: "Great experience overall. Parasailing was the highlight of the day!",
+        images: [],
+      },
+    ],
   },
   9: {
     id: 9,
-    name: 'Meghalaya Caving Adventure',
+    name: "Meghalaya Caving Adventure",
+    location: "Meghalaya",
+    description: "Explore the mysterious caves of Meghalaya, known as the 'Abode of Clouds'. Discover underground rivers, stalactites, and stalagmites.",
+    price: "₹3,500",
+    discountedPrice: "₹3,200",
     images: [
-      'https://www.kipepeo.in/wp-content/uploads/meghalaya-caving-06.jpg',
-      'https://www.holidayrentals.co.in/blog/wp-content/uploads/2015/12/Caving-Meghalaya-400x266.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-9Vb7Ug_oUG6hZIh35HWxhOji24DEmjUwg&s'
+      "https://images.unsplash.com/photo-1504218727796-db522a2cef6c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1520087619250-584c0cbd35e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1519075428252-6c1b0e9d1c35?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Embark on an exciting Meghalaya Caving Adventure, exploring some of India’s most stunning and mysterious caves. Discover ancient limestone formations, underground rivers, and awe-inspiring stalactites and stalagmites. Experience the thrill of spelunking through hidden caverns while surrounded by Meghalaya’s breathtaking landscapes.',
-    price: '₹8,000',
-    discountedPrice: '₹7,500',
-    itinerary: ['Day 1: Arrival in Shillong, local sightseeing', 'Day 2: Drive to Cherrapunji, briefing, and warm-up session', 'Day 3: Explore Mawsmai Cave, Arwah Cave & the thrilling Siju Cave expedition', 'Day 4: Visit Laitlum Canyon, relax at Umiam Lake, and departure'],
+    itinerary: [
+      "Arrival in Shillong",
+      "Transfer to Mawsmai Cave",
+      "Guided caving expedition (3 hours)",
+      "Lunch at a local restaurant",
+      "Visit to Nohkalikai Falls",
+      "Return to Shillong",
+    ],
     reviews: [
       {
-        user: 'Venky',
-        rating: 3.5,
-        type: 'Couple',
-        title: 'Thrilling and Mysterious!',
-        comment: 'Exploring Meghalaya’s caves was an incredible experience! The rock formations inside the caves were mesmerizing, and the adventure was truly one-of-a-kind.',
-        date: '10 Feb 2024',
-        images: []
-      }
-    ]
+        title: "Unforgettable Caving Experience",
+        user: "David",
+        date: "2024-03-20",
+        rating: 5,
+        comment: "The caves were spectacular! Our guide was knowledgeable and made the experience safe and enjoyable.",
+        images: [],
+      },
+      {
+        title: "Adventure of a Lifetime",
+        user: "Emma",
+        date: "2024-03-18",
+        rating: 4,
+        comment: "Challenging but incredibly rewarding. The underground rivers were magical.",
+        images: [],
+      },
+    ],
   },
   10: {
     id: 10,
-    name: 'Sand Dune Safari & Camping',
+    name: "Sand Dune Safari & Camping",
+    location: "Jaisalmer",
+    description: "Experience the magic of the Thar Desert with a thrilling sand dune safari followed by an overnight camping experience under the stars.",
+    price: "₹4,000",
+    discountedPrice: "₹3,600",
     images: [
-      'https://chokhidhani.com/desert-camp-jaisalmer/wp-content/uploads/2023/04/image11-768x512.jpg',
-      'https://media-cdn.tripadvisor.com/media/photo-s/0d/06/96/11/dunes-desert-safari.jpg',
-      'https://i.ytimg.com/vi/Un7pCv0W95I/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDSwxwU4jeIdrCQd0yhkIv4VmaXtg'
+      "https://images.unsplash.com/photo-1512389142860-9c449e58a543?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
+      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
+      "https://images.unsplash.com/photo-1682686581362-796145f0e123?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Embark on an unforgettable Sand Dune Safari & Camping adventure in the golden deserts of Rajasthan. Experience the thrill of dune bashing, witness a breathtaking sunset over the vast sand dunes, and enjoy a cultural evening with folk music and dance under the starlit sky. End the day with a cozy camping experience in traditional desert tents.',
-    price: '₹10,000',
-    discountedPrice: '₹9,500',
-    itinerary: ['Day 1: Arrival in Jaisalmer, local sightseeing, and market visi', 'Day 2: Drive to the desert camp, dune bashing, and camel safari', 'Day 3: Enjoy cultural performances, Rajasthani dinner, and overnight camping', 'Day 4: Sunrise over the dunes and departure'],
+    itinerary: [
+      "Pickup from Jaisalmer",
+      "Camel safari to Sam Sand Dunes",
+      "Sunset views from the dunes",
+      "Cultural program and dinner at camp",
+      "Overnight stay in desert tents",
+      "Sunrise view and breakfast",
+      "Return to Jaisalmer",
+    ],
     reviews: [
       {
-        user: 'Sneha',
+        title: "Magical Desert Experience",
+        user: "Thomas",
+        date: "2024-03-25",
         rating: 5,
-        type: 'Couple',
-        title: 'Mesmerizing Desert Experience!',
-        comment: 'The safari was thrilling, and camping under the stars was magical! The folk performances added a special touch to our experience.',
-        date: '15 Jan 2025',
-        images: []
-      }
-    ]
+        comment: "The desert safari was incredible. Watching the sunset over the dunes was a moment I'll never forget.",
+        images: [],
+      },
+      {
+        title: "Great Cultural Experience",
+        user: "Sophia",
+        date: "2024-03-22",
+        rating: 4,
+        comment: "The cultural program and food were excellent. The tents were comfortable but it got quite cold at night.",
+        images: [],
+      },
+    ],
   },
   11: {
     id: 11,
-    name: 'White Water Rafting',
+    name: "White Water Rafting",
+    location: "Rishikesh",
+    description: "Challenge yourself with an adrenaline-pumping white water rafting experience on the Ganges River in Rishikesh, the adventure capital of India.",
+    price: "₹1,800",
+    discountedPrice: "₹1,500",
     images: [
-      'https://www.visitsouthwestidaho.org/wp-content/uploads/fly-images/4774/whitewater-rafting-in-idaho-payette-river-1-2-scaled-0x0.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBOw24L0kcWbfvlMzQcju-JFslfXw99wa-Rg&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIkGj0yYtQjhFrBc9IZRoljbS6DvTPE587gA&s'
+      "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1623796898303-c95f26d5e2c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1504309092620-4d0ec726efa4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Get ready for an adrenaline-pumping White Water Rafting adventure! Navigate through thrilling rapids, experience the rush of fast-flowing rivers, and soak in the breathtaking natural landscapes around you. Whether you are a beginner or an experienced rafter, this adventure promises excitement, teamwork, and unforgettable moments on the water.',
-    price: '₹5,000',
-    discountedPrice: '₹4,500',
-    itinerary: ['Day 1: Arrival at the rafting destination, safety briefing, and gear check', 'Day 2: Warm-up session, guided rafting experience through exhilarating rapids', 'Day 3: Explore nearby scenic spots, waterfalls, and local attractions.', 'Day 4: Departure'],
+    itinerary: [
+      "Arrival at rafting point",
+      "Safety briefing and equipment distribution",
+      "Rafting through grade III and IV rapids (16 km)",
+      "Cliff jumping opportunity (optional)",
+      "Lunch break by the river",
+      "Return to starting point",
+    ],
     reviews: [
       {
-        user: 'Jashu',
+        title: "Thrilling Adventure",
+        user: "James",
+        date: "2024-03-15",
+        rating: 5,
+        comment: "The rapids were amazing! Our guide was excellent and made sure we had a safe but exciting experience.",
+        images: [],
+      },
+      {
+        title: "Great Team Building Activity",
+        user: "Olivia",
+        date: "2024-03-12",
         rating: 4,
-        type: 'Couple',
-        title: 'hrilling and Unforgettable!',
-        comment: 'Rafting was the highlight of our trip! The rush of navigating through rapids was an experience like no other. Highly recommended for adventure lovers!',
-        date: '20 jun 2024',
-        images: []
-      }
-    ]
+        comment: "We went as a group of friends and had a blast. The cliff jumping was an unexpected highlight!",
+        images: [],
+      },
+    ],
   },
   12: {
     id: 12,
-    name: 'Coorg Coffee Plantation Trek',
+    name: "Coorg Coffee Plantation Trek",
+    location: "Coorg",
+    description: "Trek through the lush coffee plantations of Coorg, learning about coffee cultivation while enjoying the beautiful Western Ghats landscape.",
+    price: "₹2,200",
+    discountedPrice: "₹1,900",
     images: [
-      'https://d3kgrlupo77sg7.cloudfront.net/media/coorgvisit.com/images/tinymce/Image.20230208040947.webp',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM89f34iSYcULHQ1lbVCy_3sfZflMsHJzfnw&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlYJvuby3HIN6wEIeW-2OoHmG540hVs8lZnA&s'
+      "https://images.unsplash.com/photo-1599631438222-8d7c7f7d0fee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1504387432042-8aca549e4729?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Embark on a refreshing Coorg Coffee Plantation Trek, where adventure meets serenity. Walk through lush green coffee estates, breathe in the fresh aroma of coffee beans, and witness breathtaking landscapes. Enjoy the scenic trails, spot diverse flora and fauna, and experience the charm of Coorg’s misty hills and waterfalls.',
-    price: '₹4,000',
-    discountedPrice: '₹3,200',
-    itinerary: ['Day 1: Arrival in Coorg, local sightseeing, and visit to a coffee estate', 'Day 2: Guided trek through coffee plantations, scenic viewpoints, and waterfalls', 'Day 3: Explore Dubare Elephant Camp, visit Abbey Falls, and relax at Raja’s Seat', 'Day 4: Departure'],
+    itinerary: [
+      "Pickup from Madikeri",
+      "Trek through coffee plantations (3-4 hours)",
+      "Coffee processing demonstration",
+      "Coffee tasting session",
+      "Traditional Kodava lunch",
+      "Visit to nearby waterfall",
+      "Return to Madikeri",
+    ],
     reviews: [
       {
-        user: 'Poojitha',
+        title: "Educational and Beautiful",
+        user: "William",
+        date: "2024-03-18",
+        rating: 5,
+        comment: "Learned so much about coffee cultivation. The plantation was beautiful and the coffee tasting was excellent!",
+        images: [],
+      },
+      {
+        title: "Peaceful Trek",
+        user: "Ava",
+        date: "2024-03-15",
         rating: 4,
-        type: 'Couple',
-        title: 'Tranquil & Refreshing!',
-        comment: 'Walking through the coffee plantations was an absolute delight! The trek was easy and scenic, and the aroma of coffee in the air made the experience even better. A perfect getaway!',
-        date: '10 Aug 2024',
-        images: []
-      }
-    ]
+        comment: "A relaxing trek with stunning views. The traditional lunch was delicious and authentic.",
+        images: [],
+      },
+    ],
   },
   13: {
     id: 13,
-    name: 'Zanskar Frozen River Trek',
+    name: "Zanskar Frozen River Trek",
+    location: "Zanskar",
+    description: "Embark on the legendary Chadar Trek along the frozen Zanskar River, one of the most unique and challenging winter treks in the world.",
+    price: "₹25,000",
+    discountedPrice: "₹22,000",
     images: [
-      'https://trekthehimalayas.com/images/ChadarTrekFrozenRiver/GalleryDesktop/Winter/91a87695-e4bd-4cea-a274-724316afe373_Chadar-6.webp',
-      'https://ekaxp.in/wp-content/uploads/2022/09/Chadar-Trek-Ladakh-India_Eka-Experiences3.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkHXAwyWGmhgm-OerpKOkzTVGa6jACLUztg&s'
+      "https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1494564605686-2e931f77a8e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1516638121-7d8c9e67a0f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Embark on an exhilarating Zanskar Frozen River Trek, also known as the Chadar Trek, one of the most challenging and breathtaking winter treks in India. Walk over the frozen Zanskar River, witness stunning ice formations, and experience the raw beauty of Ladakh’s winter wonderland. This trek offers a once-in-a-lifetime adventure through icy landscapes, frozen waterfalls, and remote Himalayan villages',
-    price: '₹22,000',
-    discountedPrice: '₹21,000',
-    itinerary: ['Day 1: Arrival in Leh, acclimatization, and local exploration', 'Day 2: Acclimatization and trek briefing, visit Shanti Stupa and Leh Market', 'Day 3: Drive to Chilling, trek to Tsomo Paldar (first campsite on the frozen river).', 'Day 4: Trek to Dib Cave, experiencing surreal frozen landscapes','Day 5: Trek to Nerak Waterfall, admire the magnificent frozen waterfall', 'Day 6: Return trek to Tsomo Paldar via the same frozen route', 'Day 7: Trek back to Chilling, drive to Leh','Day 8: Departure from Leh'],
+    itinerary: [
+      "Arrival in Leh and acclimatization (2 days)",
+      "Drive to Chilling, starting point of the trek",
+      "Trek on the frozen river (6 days)",
+      "Visit to remote villages and monasteries",
+      "Return to Chilling and drive back to Leh",
+    ],
     reviews: [
       {
-        user: 'Ravi',
+        title: "Once in a Lifetime Experience",
+        user: "Benjamin",
+        date: "2024-02-20",
+        rating: 5,
+        comment: "The most challenging and rewarding trek I've ever done. Walking on the frozen river was surreal.",
+        images: [],
+      },
+      {
+        title: "Breathtaking but Difficult",
+        user: "Charlotte",
+        date: "2024-02-15",
         rating: 4,
-        type: 'Couple',
-        title: 'Romantic and Adventurous',
-        comment: ' Walking on the frozen river was surreal! The icy landscapes and frozen waterfalls were mesmerizing. The trek was challenging, but the experience was totally worth it. A must-do for adventure lovers!',
-        date: '10 apr 2024',
-        images: []
-      }
-    ]
+        comment: "Not for the faint-hearted but absolutely worth it. The landscapes are otherworldly.",
+        images: [],
+      },
+    ],
   },
   14: {
     id: 14,
-    name: 'Munnar Tea Estate Walk',
+    name: "Munnar Tea Estate Walk",
+    location: "Munnar",
+    description: "Stroll through the verdant tea plantations of Munnar, learning about tea cultivation and processing while enjoying the cool mountain air.",
+    price: "₹1,500",
+    discountedPrice: "₹1,300",
     images: [
-      'https://munnarinfo.in/uploads/profile/1560610709fdewrjya758276.jpg',
-      'https://www.holidify.com/images/cmsuploads/compressed/Munnar66_20181211014155.jpg',
-      'https://www.stayvista.com/blog/wp-content/uploads/2024/10/blog-33.jpg'
+      "https://images.unsplash.com/photo-1598322252413-8603f2775e41?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1544233726-9f1d0a91fd31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Immerse yourself in the lush green beauty of Munnar’s Tea Estates, where rolling hills are covered in mist and endless tea plantations create a breathtaking landscape. Walk through the scenic tea gardens, learn about tea cultivation and processing, and experience the serenity of Munnar’s tranquil environment. This leisurely walk is perfect for nature lovers, photography enthusiasts, and those looking to escape into the refreshing air of the Western Ghats.',
-    price: '₹2,500',
-    discountedPrice: '₹2,000',
-    itinerary: ['Day 1: Arrival in Munnar, explore local markets and tea museums', 'Day 2: Guided tea estate walk, visit tea factories, and interact with tea plantation workers', 'Day 3: Sunrise viewpoint trek, enjoy a picnic amidst the tea gardens', 'Day 4: Departure'],
+    itinerary: [
+      "Pickup from Munnar town",
+      "Guided walk through tea estates (2-3 hours)",
+      "Visit to tea factory",
+      "Tea tasting session",
+      "Visit to Munnar Tea Museum",
+      "Return to Munnar town",
+    ],
     reviews: [
       {
-        user: 'Susmi',
-        rating: 3,
-        type: 'Couple',
-        title: 'Serene & Refreshing Experience!',
-        comment: 'Walking through the tea plantations was peaceful and rejuvenating. The aroma of fresh tea leaves and the breathtaking views made this an unforgettable experience. Highly recommended for nature lovers!',
-        date: '17 July 2024',
-        images: []
-      }
-    ]
+        title: "Beautiful Landscapes",
+        user: "Daniel",
+        date: "2024-03-22",
+        rating: 5,
+        comment: "The rolling hills covered in tea plantations were stunning. The guide was knowledgeable about tea cultivation.",
+        images: [],
+      },
+      {
+        title: "Relaxing Experience",
+        user: "Mia",
+        date: "2024-03-20",
+        rating: 4,
+        comment: "A peaceful walk with beautiful views. The tea tasting was interesting and educational.",
+        images: [],
+      },
+    ],
   },
   15: {
     id: 15,
-    name: 'Mahabaleshwar Paragliding',
+    name: "Mahabaleshwar Paragliding",
+    location: "Mahabaleshwar",
+    description: "Soar above the beautiful Sahyadri mountains with a tandem paragliding experience in Mahabaleshwar, offering breathtaking views of the valleys below.",
+    price: "₹3,000",
+    discountedPrice: "₹2,700",
     images: [
-      'https://i.ytimg.com/vi/8O42tjbyHnc/sddefault.jpg',
-      'https://d3sftlgbtusmnv.cloudfront.net/blog/wp-content/uploads/2024/10/Paragliding-in-Mahabaleshwar-840x425.jpg',
-      'https://curlytales.com/wp-content/uploads/2023/12/paragliding.jpg'
+      "https://images.unsplash.com/photo-1503507420689-7b961cc77da5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1605493725784-56651e4c7b7c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1600255821058-c4f89958d700?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Soar high above the stunning Sahyadri Hills with an exhilarating paragliding experience in Mahabaleshwar! Witness breathtaking views of the lush green valleys, sparkling rivers, and endless mountain landscapes as you glide through the sky. Whether you’re a first-time flyer or an adventure enthusiast, this paragliding experience is sure to leave you thrilled and awestruck.',
-    price: '₹7,000',
-    discountedPrice: '₹6,500',
-    itinerary: ['Day 1: Arrival in Mahabaleshwar, explore scenic viewpoints and local attractions', 'Day 2: Paragliding briefing, safety instructions, and tandem paragliding flight over the valleys', 'Day 3: Optional sightseeing tour (Venna Lake, Pratapgad Fort) and leisure activities', 'Day 4: Departure'],
+    itinerary: [
+      "Arrival at paragliding site",
+      "Safety briefing and equipment check",
+      "Tandem paragliding flight (15-20 minutes)",
+      "Photo and video recording (optional)",
+      "Certificate of completion",
+      "Departure",
+    ],
     reviews: [
       {
-        user: 'Chandu',
+        title: "Exhilarating Experience",
+        user: "Ethan",
+        date: "2024-03-25",
         rating: 5,
-        type: 'Couple',
-        title: 'hrilling & Unforgettable Experience!',
-        comment: 'The paragliding experience was surreal! Floating above the beautiful landscapes of Mahabaleshwar was both thrilling and peaceful. A must-try for adventure seekers!',
-        date: '14 feb 2023',
-        images: []
-      }
-    ]
+        comment: "The views were incredible and the pilot was very professional. Felt completely safe throughout.",
+        images: [],
+      },
+      {
+        title: "Worth Every Penny",
+        user: "Isabella",
+        date: "2024-03-22",
+        rating: 4,
+        comment: "A bit scary at first but amazing once in the air. The valley views were spectacular.",
+        images: [],
+      },
+    ],
   },
   16: {
     id: 16,
-    name: 'Andaman Scuba Diving',
+    name: "Andaman Scuba Diving",
+    location: "Andaman",
+    description: "Discover the vibrant underwater world of the Andaman Islands with scuba diving experiences suitable for beginners and certified divers.",
+    price: "₹4,500",
+    discountedPrice: "₹4,000",
     images: [
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS41FdXhIRlns4QshZYIhHOkJeX9hK-q99Nig&s',
-      'https://cdn.experienceandamans.com/images/scuba-diving-andaman-islands.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLE4x6SbEihcrobwdAmu23jehjelN9bXTHmA&s'
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1682686581362-796145f0e123?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1596464716127-f2a82984de30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Dive into the crystal-clear waters of the Andaman Islands and explore a mesmerizing underwater world filled with vibrant coral reefs and diverse marine life. Whether you are a beginner or an experienced diver, this scuba diving adventure offers an unforgettable experience with trained instructors guiding you through the best dive sites in Andaman. Witness exotic fish, sea turtles, and stunning aquatic landscapes as you immerse yourself in the beauty of the ocean.',
-    price: '₹58,000',
-    discountedPrice: '₹55,500',
-    itinerary: ['Day 1: Arrival in Port Blair, local sightseeing, and beach exploration', 'Day 2: Scuba diving briefing, safety training, and first dive experience at Havelock Island', 'Day 3: Advanced dive session at Elephant Beach, explore coral reefs and marine life.', 'Day 4: Departure'],
+    itinerary: [
+      "Pickup from hotel in Port Blair/Havelock",
+      "Boat ride to dive site",
+      "Diving briefing and equipment setup",
+      "Scuba diving session (45-60 minutes)",
+      "Refreshments on boat",
+      "Return to shore",
+    ],
     reviews: [
       {
-        user: 'Vijay',
+        title: "Amazing Marine Life",
+        user: "Jacob",
+        date: "2024-03-28",
+        rating: 5,
+        comment: "The coral reefs were vibrant and we saw so many colorful fish. The instructors were excellent.",
+        images: [],
+      },
+      {
+        title: "Great for Beginners",
+        user: "Sophia",
+        date: "2024-03-25",
         rating: 4,
-        type: 'Couple',
-        title: 'Magical Underwater Experience!',
-        comment: 'Scuba diving in Andaman was an absolute dream! The marine life and coral reefs were breathtaking. The instructors were very professional and made us feel completely safe throughout the experience.',
-        date: '29 Jan 2024',
-        images: []
-      }
-    ]
+        comment: "It was my first time diving and I felt completely safe. The underwater world was magical.",
+        images: [],
+      },
+    ],
   },
   17: {
     id: 17,
-    name: 'Ooty Nilgiri Toy Train Ride',
+    name: "Ooty Nilgiri Toy Train Ride",
+    location: "Ooty",
+    description: "Experience the charm of the UNESCO-listed Nilgiri Mountain Railway, a heritage toy train that winds through picturesque landscapes and tunnels.",
+    price: "₹1,200",
+    discountedPrice: "₹1,000",
     images: [
-      'https://i.ytimg.com/vi/H8-Z6RjoR-I/hqdefault.jpg',
-      'https://www.katchutravels.com/wp-content/uploads/2018/01/26233519_10155687825470860_3950415352338804460_o.jpg',
-      'https://www.tamilnadutourism.tn.gov.in/img/pages/large-desktop/the-nilgiri-mountain-railway-1654196073_a8a2bec2db7df995bf9e.webp'
+      "https://images.unsplash.com/photo-1601628828688-632f38a5a7d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1589395937772-f67057e233df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1527667175137-6fea2fb4d5c8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Take a scenic journey through the Nilgiri Hills aboard the iconic Nilgiri Mountain Railway, a UNESCO World Heritage Site. Experience breathtaking views of lush tea gardens, misty hills, and picturesque valleys as the toy train winds through tunnels and bridges. A perfect getaway for nature lovers and photography enthusiasts, this ride offers a nostalgic and serene escape into the beauty of Ooty.',
-    price: '₹5,000',
-    discountedPrice: '₹1,500',
-    itinerary: ['Day 1: Arrival in Ooty, explore local attractions and botanical gardens', 'Day 2: Board the Nilgiri Toy Train, enjoy the scenic ride through tunnels, waterfalls, and forests', 'Day 3: Departure'],
+    itinerary: [
+      "Pickup from Ooty/Mettupalayam",
+      "Board the heritage Nilgiri Mountain Railway",
+      "Scenic train journey through mountains and forests (2-3 hours)",
+      "Photo stops at scenic viewpoints",
+      "Arrival at destination station",
+      "Return transfer to hotel",
+    ],
     reviews: [
       {
-        user: 'Bose',
-        rating: 4.5,
-        type: 'Couple',
-        title: 'A Fairy Tale Train Ride!',
-        comment: 'he Nilgiri Toy Train ride was mesmerizing! The slow journey through the misty hills and tea gardens felt like a dream. Highly recommended for a peaceful and scenic experience.',
-        date: '10 Nov 2024',
-        images: []
-      }
-    ]
+        title: "Nostalgic Journey",
+        user: "Noah",
+        date: "2024-03-20",
+        rating: 5,
+        comment: "A beautiful journey through time. The steam locomotive and vintage coaches were charming and the scenery was spectacular.",
+        images: [],
+      },
+      {
+        title: "Scenic Route",
+        user: "Emma",
+        date: "2024-03-18",
+        rating: 4,
+        comment: "The views were amazing but the train was quite crowded. Still, a must-do experience in Ooty.",
+        images: [],
+      },
+    ],
   },
   18: {
     id: 18,
-    name: 'Bungee Jumping in Rishikesh',
+    name: "Bungee Jumping in Rishikesh",
+    location: "Rishikesh",
+    description: "Experience the ultimate adrenaline rush with a bungee jump from a 83-meter high platform over the Ganges River in Rishikesh.",
+    price: "₹3,500",
+    discountedPrice: "₹3,200",
     images: [
-      'https://media1.thrillophilia.com/filestore/vh7y49qhaawmyqe1ugx5svaz9uuw__BH_1023.JPG?w=400&dpr=2',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTXCj1Ugpfaz8UXaBA-jon4Gj-euLrP8Tn0w&s',
-      'https://campgangavatika.com/img/act/bungee-jumping-in-shivpuri.jpg'
+      "https://images.unsplash.com/photo-1544552866-d3ed42536cfd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1629196914168-3a2652305f9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1605493725784-56651e4c7b7c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     ],
-    description: 'Get your adrenaline pumping with an unforgettable bungee jumping experience in Rishikesh, Indias adventure capital! Jump from 83 meters, the highest bungee platform in India, over the stunning Himalayan foothills and the Ganges River. Feel the ultimate thrill and free fall sensation, guided by certified professionals ensuring maximum safety and excitement. Perfect for adventure enthusiasts looking to conquer their fears!',
-    price: '₹5,000',
-    discountedPrice: '₹4,500',
-    itinerary: ['Day 1: Arrival', 'Day 2: base camp, briefing, and warm-up session', 'Day 3: Early morning trek to the peak, enjoy panoramic views.', 'Day 4: Departure'],
+    itinerary: [
+      "Arrival at bungee jumping site",
+      "Registration and medical check",
+      "Safety briefing and equipment fitting",
+      "Bungee jump from 83-meter platform",
+      "Certificate of completion",
+      "Photo and video package (optional)",
+      "Departure",
+    ],
     reviews: [
       {
-        user: 'Manas',
+        title: "Terrifying but Amazing",
+        user: "Lucas",
+        date: "2024-03-25",
         rating: 5,
-        type: 'Couple',
-        title: 'Heart-Pounding Experience!',
-        comment: ' Bungee jumping in Rishikesh was the most thrilling thing I’ve ever done! The free fall was insane, and the view was breathtaking. A must-try for adventure seekers!',
-        date: '23 otc 2024',
-        images: []
-      }
-    ]
-  }
+        comment: "The scariest thing I've ever done but also the most exhilarating. The staff were professional and safety was clearly a priority.",
+        images: [],
+      },
+      {
+        title: "Bucket List Experience",
+        user: "Lily",
+        date: "2024-03-22",
+        rating: 4,
+        comment: "Took me three attempts to finally jump but it was worth it! The views of the river and mountains were incredible.",
+        images: [],
+      },
+    ],
+  },
+}
 
-};
-
+// Replace the TourDetails component with this enhanced version
 const TourDetails = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [tour, setTour] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState('');
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [tour, setTour] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [weather, setWeather] = useState(null)
+  const [weatherForecast, setWeatherForecast] = useState([])
+  const [isModalOpen, setModalOpen] = useState(false)
+  const [currentImage, setCurrentImage] = useState("")
+  const [activeTab, setActiveTab] = useState("details")
+  const mapRef = useRef(null)
+  const [packingList, setPackingList] = useState([])
+  const [alerts, setAlerts] = useState([])
+  const [guides, setGuides] = useState([])
+  const [selectedGuide, setSelectedGuide] = useState(null)
+  const [bookingDate, setBookingDate] = useState("")
+  const [rentalShops, setRentalShops] = useState([])
+  const [selectedShop, setSelectedShop] = useState(null)
+  const [selectedRentalItems, setSelectedRentalItems] = useState([])
+  const [rentalDays, setRentalDays] = useState(1)
+  const [rentalStartDate, setRentalStartDate] = useState("")
+
+  // Determine adventure type for safety guidelines and packing list
+  const getAdventureType = useCallback((tourName) => {
+    const tourNameLower = tourName.toLowerCase()
+    if (tourNameLower.includes("trek") || tourNameLower.includes("hiking")) return "trekking"
+    if (tourNameLower.includes("raft") || tourNameLower.includes("water")) return "rafting"
+    if (tourNameLower.includes("scuba") || tourNameLower.includes("diving")) return "diving"
+    if (tourNameLower.includes("camp")) return "camping"
+    if (tourNameLower.includes("bike") || tourNameLower.includes("cycling")) return "biking"
+    if (tourNameLower.includes("paraglid")) return "paragliding"
+    if (tourNameLower.includes("bungee")) return "bungee"
+    return "default"
+  }, [])
 
   useEffect(() => {
     const fetchTourDetails = async () => {
       try {
-        const data = mockTourData[id];
+        const data = mockTourData[id]
         if (!data) {
-          throw new Error('Tour not found');
+          throw new Error("Tour not found")
         }
-        setTour(data);
+        setTour(data)
+        fetchWeather(data.location)
+        fetchWeatherForecast(data.location)
+
+        // Set packing list based on adventure type
+        const adventureType = getAdventureType(data.name)
+        setPackingList(packingChecklists[adventureType] || packingChecklists.default)
+
+        // Set alerts for the location
+        setAlerts(weatherAlerts[data.location] || [])
+
+        // Set guides for the location
+        setGuides(localGuides[data.location] || localGuides.default)
+        
+        // Set rental shops based on adventure type
+        setRentalShops(gearRentals[adventureType] || gearRentals.default)
       } catch (error) {
-        setError(error.message);
+        setError(error.message)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchTourDetails();
-  }, [id]);
+    }
+
+    fetchTourDetails()
+  }, [id, getAdventureType])
+
+  const fetchWeather = async (location) => {
+    try {
+      const apiKey = "YOUR_OPENWEATHERMAP_API_KEY" // Replace with your actual API key
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`,
+      )
+
+      // Debugging: Check response status
+      console.log("Fetching weather for:", location)
+      console.log("Response Status:", response.status)
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      // Debugging: Log fetched data
+      console.log("Weather API Response:", data)
+
+      if (!data.main || !data.weather) {
+        throw new Error("Incomplete weather data received")
+      }
+
+      setWeather({
+        temperature: data.main.temp,
+        condition: data.weather[0].description,
+        icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`,
+        humidity: data.main.humidity,
+        windSpeed: data.wind.speed,
+        feelsLike: data.main.feels_like,
+      })
+    } catch (error) {
+      console.error("Error fetching weather:", error.message)
+      setWeather(null)
+    }
+  }
+
+  const fetchWeatherForecast = async (location) => {
+    try {
+      // This would normally be a real API call
+      // For demo purposes, we'll create mock forecast data
+      const mockForecast = [
+        {
+          date: "Tomorrow",
+          temperature: Math.floor(Math.random() * 10) + 20,
+          condition: "Partly cloudy",
+          icon: "cloud",
+        },
+        {
+          date: "Day after tomorrow",
+          temperature: Math.floor(Math.random() * 10) + 18,
+          condition: "Sunny",
+          icon: "sun",
+        },
+        {
+          date: "In 3 days",
+          temperature: Math.floor(Math.random() * 10) + 15,
+          condition: "Light rain",
+          icon: "cloud-rain",
+        },
+      ]
+
+      setWeatherForecast(mockForecast)
+    } catch (error) {
+      console.error("Error fetching forecast:", error.message)
+      setWeatherForecast([])
+    }
+  }
 
   const handleImageClick = (image) => {
-    setCurrentImage(image);
-    setModalOpen(true);
-  };
+    setCurrentImage(image)
+    setModalOpen(true)
+  }
 
   const handleModalClose = () => {
-    setModalOpen(false);
-    setCurrentImage('');
-  };
-
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+    setModalOpen(false)
+    setCurrentImage("")
+  }
 
   const handleBookNowClick = () => {
-    navigate('/payment'); // Navigate to the payment page
-  };
+    navigate("/payment") // Navigate to the payment page
+  }
+
+  const toggleChecklistItem = (itemId) => {
+    setPackingList((prevList) =>
+      prevList.map((item) => (item.id === itemId ? { ...item, checked: !item.checked } : item)),
+    )
+  }
+
+  const handleGuideSelect = (guide) => {
+    setSelectedGuide(guide)
+  }
+
+  const handleBookGuide = () => {
+    if (!bookingDate) {
+      alert("Please select a date for booking the guide.")
+      return
+    }
+
+    alert(`Guide ${selectedGuide.name} booked successfully for ${bookingDate}!`)
+    setSelectedGuide(null)
+    setBookingDate("")
+  }
+
+  const handleShopSelect = (shop) => {
+    setSelectedShop(shop)
+    setSelectedRentalItems([])
+  }
+
+  const handleRentalItemToggle = (item) => {
+    const isSelected = selectedRentalItems.some(selectedItem => selectedItem.name === item.name)
+    
+    if (isSelected) {
+      setSelectedRentalItems(selectedRentalItems.filter(selectedItem => selectedItem.name !== item.name))
+    } else {
+      setSelectedRentalItems([...selectedRentalItems, item])
+    }
+  }
+
+  const calculateRentalTotal = () => {
+    let total = 0
+    selectedRentalItems.forEach(item => {
+      const priceValue = parseInt(item.price.replace(/[^\d]/g, ''))
+      total += priceValue * rentalDays
+    })
+    return `₹${total}`
+  }
+
+  const handleRentalBooking = () => {
+    if (!rentalStartDate) {
+      alert("Please select a start date for your rental.")
+      return
+    }
+    
+    if (selectedRentalItems.length === 0) {
+      alert("Please select at least one item to rent.")
+      return
+    }
+
+    const itemsList = selectedRentalItems.map(item => item.name).join(", ")
+    alert(`Rental booking confirmed!\n\nShop: ${selectedShop.name}\nItems: ${itemsList}\nDuration: ${rentalDays} days\nStart Date: ${rentalStartDate}\nTotal: ${calculateRentalTotal()}`)
+    
+    setSelectedShop(null)
+    setSelectedRentalItems([])
+    setRentalDays(1)
+    setRentalStartDate("")
+  }
+
+  const getWeatherIcon = (condition) => {
+    if (condition === "Sunny" || condition === "Clear") return <Sun className="w-6 h-6 text-yellow-500" />
+    if (condition === "Partly cloudy" || condition === "Cloudy") return <Cloud className="w-6 h-6 text-gray-500" />
+    if (condition.includes("rain")) return <CloudRain className="w-6 h-6 text-blue-500" />
+    return <Thermometer className="w-6 h-6 text-red-500" />
+  }
+
+  const getAlertSeverityColor = (severity) => {
+    switch (severity) {
+      case "low":
+        return "bg-yellow-100 border-yellow-400 text-yellow-800"
+      case "moderate":
+        return "bg-orange-100 border-orange-400 text-orange-800"
+      case "high":
+        return "bg-red-100 border-red-400 text-red-800"
+      default:
+        return "bg-blue-100 border-blue-400 text-blue-800"
+    }
+  }
+
+  if (loading) return <div className="loading">Loading...</div>
+  if (error) return <div className="error">Error: {error}</div>
+
+  const location = tourLocations[id]
+  const adventureType = getAdventureType(tour.name)
+  const safetyTips = safetyGuidelines[adventureType] || safetyGuidelines.default
 
   return (
     <div className="tour-details-container">
       <h1 className="tour-title">{tour.name}</h1>
-      <div className="tour-images">
-        {tour.images.map((image, index) => (
-          <img key={index} src={image} alt={`${tour.name} ${index + 1}`} className="tour-image" onClick={() => handleImageClick(image)} />
-        ))}
+
+      <div className="tour-tabs">
+        <button
+          className={`tab-button ${activeTab === "details" ? "active" : ""}`}
+          onClick={() => setActiveTab("details")}
+        >
+          Tour Details
+        </button>
+        <button className={`tab-button ${activeTab === "map" ? "active" : ""}`} onClick={() => setActiveTab("map")}>
+          Location Map
+        </button>
+        <button
+          className={`tab-button ${activeTab === "safety" ? "active" : ""}`}
+          onClick={() => setActiveTab("safety")}
+        >
+          Safety & Packing
+        </button>
+        <button
+          className={`tab-button ${activeTab === "weather" ? "active" : ""}`}
+          onClick={() => setActiveTab("weather")}
+        >
+          Weather & Alerts
+        </button>
+        <button
+          className={`tab-button ${activeTab === "guides" ? "active" : ""}`}
+          onClick={() => setActiveTab("guides")}
+        >
+          Local Guides
+        </button>
+        <button
+          className={`tab-button ${activeTab === "gear" ? "active" : ""}`}
+          onClick={() => setActiveTab("gear")}
+        >
+          Gear Rentals
+        </button>
+        <button
+          className={`tab-button ${activeTab === "reviews" ? "active" : ""}`}
+          onClick={() => setActiveTab("reviews")}
+        >
+          Reviews
+        </button>
       </div>
-      <section className="tour-section">
-        <h2>About</h2>
-        <p>{tour.description}</p>
-      </section>
-      <section className="tour-section">
-        <h2>Price</h2>
-        <p>Starting from <span className="original-price">{tour.price}</span> <span className="discounted-price">{tour.discountedPrice}/person</span></p>
-      </section>
-      <section className="tour-section">
-        <h2>Itinerary</h2>
-        <ul>{tour.itinerary.map((item, index) => <li key={index}>{item}</li>)}</ul>
-      </section>
-      <section className="tour-section">
-        <h2>Reviews</h2>
-        <div className="reviews-container">
-          {tour.reviews.map((review, index) => (
-            <div key={index} className="review-card">
-              <h3>{review.title}</h3>
-              <p>{review.comment}</p>
-              <p>Written on {review.date}</p>
+
+      {activeTab === "details" && (
+        <>
+          <div className="tour-images">
+            {tour.images.map((image, index) => (
+              <img
+                key={index}
+                src={image || "/placeholder.svg"}
+                alt={`${tour.name} ${index + 1}`}
+                className="tour-image"
+                onClick={() => handleImageClick(image)}
+              />
+            ))}
+          </div>
+          <section className="tour-section">
+            <h2>About</h2>
+            <p>{tour.description}</p>
+          </section>
+
+          <section className="tour-section">
+            <h2>Price</h2>
+            <p>
+              Starting from <span className="original-price">{tour.price}</span>{" "}
+              <span className="discounted-price">{tour.discountedPrice}/person</span>
+            </p>
+          </section>
+          <section className="tour-section">
+            <h2>Itinerary</h2>
+            <ul>
+              {tour.itinerary.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </section>
+        </>
+      )}
+
+      {activeTab === "map" && (
+        <section className="tour-section map-section">
+          <h2>Tour Location</h2>
+          <div className="map-container">
+            {location && (
+              <MapContainer
+                center={[location.lat, location.lng]}
+                zoom={13}
+                style={{ height: "500px", width: "100%", borderRadius: "8px" }}
+                ref={mapRef}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Marker position={[location.lat, location.lng]}>
+                  <Popup>
+                    <strong>{tour.name}</strong>
+                    <br />
+                    {location.name}
+                  </Popup>
+                </Marker>
+              </MapContainer>
+            )}
+          </div>
+          <div className="map-controls">
+            <button onClick={() => mapRef.current && mapRef.current.zoomIn()}>Zoom In</button>
+            <button onClick={() => mapRef.current && mapRef.current.zoomOut()}>Zoom Out</button>
+          </div>
+        </section>
+      )}
+
+      {activeTab === "safety" && (
+        <section className="tour-section">
+          <div className="safety-guidelines">
+            <div className="flex items-center mb-4">
+              <Shield className="w-6 h-6 text-green-600 mr-2" />
+              <h2 className="text-xl font-bold">Safety Guidelines</h2>
             </div>
-          ))}
-        </div>
-      </section>
-      <section className="tour-section">
+            <p className="mb-4">Follow these important safety tips for your {tour.name} adventure:</p>
+            <ul className="safety-tips-list">
+              {safetyTips.map((tip, index) => (
+                <li key={index} className="safety-tip-item">
+                  <div className="flex items-start">
+                    <AlertTriangle className="w-5 h-5 text-orange-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>{tip}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="packing-checklist mt-8">
+            <div className="flex items-center mb-4">
+              <Package className="w-6 h-6 text-blue-600 mr-2" />
+              <h2 className="text-xl font-bold">Packing Checklist</h2>
+            </div>
+            <p className="mb-4">Customize this checklist for your {tour.name} adventure:</p>
+
+            <div className="checklist-container">
+              {packingList.map((item) => (
+                <div key={item.id} className="checklist-item" onClick={() => toggleChecklistItem(item.id)}>
+                  <div className="flex items-center">
+                    {item.checked ? (
+                      <CheckSquare className="w-5 h-5 text-green-600 mr-2" />
+                    ) : (
+                      <Square className="w-5 h-5 text-gray-400 mr-2" />
+                    )}
+                    <span className={item.checked ? "line-through text-gray-500" : ""}>{item.item}</span>
+                  </div>
+                  <span className="checklist-category">{item.category}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeTab === "weather" && (
+        <section className="tour-section">
+          <div className="weather-section">
+            <div className="flex items-center mb-4">
+              <Thermometer className="w-6 h-6 text-red-500 mr-2" />
+              <h2 className="text-xl font-bold">Current Weather in {tour.location}</h2>
+            </div>
+
+            {weather ? (
+              <div className="current-weather">
+                <div className="weather-card">
+                  <div className="weather-main">
+                    <img src={weather.icon || "/placeholder.svg"} alt={weather.condition} className="weather-icon" />
+                    <div className="weather-temp">{Math.round(weather.temperature)}°C</div>
+                  </div>
+                  <div className="weather-details">
+                    <div className="weather-detail-item">
+                      <span className="weather-label">Condition:</span>
+                      <span className="weather-value">{weather.condition}</span>
+                    </div>
+                    <div className="weather-detail-item">
+                      <span className="weather-label">Feels Like:</span>
+                      <span className="weather-value">{Math.round(weather.feelsLike)}°C</span>
+                    </div>
+                    <div className="weather-detail-item">
+                      <span className="weather-label">Humidity:</span>
+                      <span className="weather-value">{weather.humidity}%</span>
+                    </div>
+                    <div className="weather-detail-item">
+                      <span className="weather-label">Wind:</span>
+                      <span className="weather-value">{weather.windSpeed} m/s</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p>Weather data is currently unavailable.</p>
+            )}
+
+            <div className="weather-forecast mt-6">
+              <h3 className="text-lg font-semibold mb-3">3-Day Forecast</h3>
+              <div className="forecast-container">
+                {weatherForecast.map((day, index) => (
+                  <div key={index} className="forecast-card">
+                    <div className="forecast-date">{day.date}</div>
+                    <div className="forecast-icon">{getWeatherIcon(day.condition)}</div>
+                    <div className="forecast-temp">{day.temperature}°C</div>
+                    <div className="forecast-condition">{day.condition}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {alerts.length > 0 && (
+              <div className="weather-alerts mt-6">
+                <div className="flex items-center mb-3">
+                  <AlertTriangle className="w-5 h-5 text-red-500 mr-2" />
+                  <h3 className="text-lg font-semibold">Active Alerts</h3>
+                </div>
+
+                {alerts.map((alert, index) => (
+                  <div key={index} className={`alert-card ${getAlertSeverityColor(alert.severity)}`}>
+                    <div className="alert-type">{alert.type}</div>
+                    <div className="alert-message">{alert.message}</div>
+                    <div className="alert-dates">
+                      Valid: {alert.startDate} to {alert.endDate}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {activeTab === "guides" && (
+        <section className="tour-section">
+          <div className="local-guides">
+            <div className="flex items-center mb-4">
+              <Users className="w-6 h-6 text-purple-600 mr-2" />
+              <h2 className="text-xl font-bold">Local Guides for {tour.location}</h2>
+            </div>
+
+            {guides.length > 0 ? (
+              <div className="guides-container">
+                {guides.map((guide) => (
+                  <div key={guide.id} className="guide-card" onClick={() => handleGuideSelect(guide)}>
+                    <div className="guide-image-container">
+                      <img src={guide.image || "/placeholder.svg"} alt={guide.name} className="guide-image" />
+                    </div>
+                    <div className="guide-details">
+                      <h3 className="guide-name">{guide.name}</h3>
+                      <div className="guide-specialization">{guide.specialization}</div>
+                      <div className="guide-experience">{guide.experience} experience</div>
+                      <div className="guide-languages">Speaks: {guide.languages.join(", ")}</div>
+                      <div className="guide-rating">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-500 mr-1" />
+                          <span>{guide.rating}</span>
+                          <span className="text-gray-500 ml-1">({guide.reviews} reviews)</span>
+                        </div>
+                      </div>
+                      <div className="guide-price">{guide.price}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No local guides available for this location at the moment.</p>
+            )}
+
+            {selectedGuide && (
+              <div className="guide-booking-modal">
+                <div className="guide-booking-content">
+                  <h3 className="text-xl font-bold mb-4">Book {selectedGuide.name}</h3>
+
+                  <div className="guide-booking-details">
+                    <div className="flex items-center mb-3">
+                      <User className="w-5 h-5 text-gray-600 mr-2" />
+                      <span>{selectedGuide.specialization}</span>
+                    </div>
+                    <div className="flex items-center mb-3">
+                      <Calendar className="w-5 h-5 text-gray-600 mr-2" />
+                      <span>Available: {selectedGuide.availability.join(", ")}</span>
+                    </div>
+                    <div className="flex items-center mb-3">
+                      <MapPin className="w-5 h-5 text-gray-600 mr-2" />
+                      <span>{tour.location}</span>
+                    </div>
+                    <div className="flex items-center mb-5">
+                      <Star className="w-5 h-5 text-yellow-500 mr-2" />
+                      <span>
+                        {selectedGuide.rating} ({selectedGuide.reviews} reviews)
+                      </span>
+                    </div>
+
+                    <div className="booking-form">
+                      <div className="form-group">
+                        <label htmlFor="booking-date" className="form-label">
+                          Select Date:
+                        </label>
+                        <input
+                          type="date"
+                          id="booking-date"
+                          className="form-input"
+                          value={bookingDate}
+                          onChange={(e) => setBookingDate(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="booking-actions">
+                        <button className="book-guide-button" onClick={handleBookGuide}>
+                          Book Now - {selectedGuide.price}
+                        </button>
+                        <button className="cancel-button" onClick={() => setSelectedGuide(null)}>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {activeTab === "gear" && (
+        <section className="tour-section">
+          <div className="gear-rentals">
+            <div className="flex items-center mb-4">
+              <Tool className="w-6 h-6 text-orange-600 mr-2" />
+              <h2 className="text-xl font-bold">Gear & Equipment Rentals</h2>
+            </div>
+            <p className="mb-4">Rent the gear you need for your {tour.name} adventure from these nearby shops:</p>
+
+            {rentalShops.length > 0 ? (
+              <div className="rental-shops-container">
+                {rentalShops.map((shop) => (
+                  <div key={shop.id} className="rental-shop-card" onClick={() => handleShopSelect(shop)}>
+                    <div className="rental-shop-header">
+                      <h3 className="rental-shop-name">{shop.name}</h3>
+                      <div className="rental-shop-rating">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-500 mr-1" />
+                          <span>{shop.rating}</span>
+                          <span className="text-gray-500 ml-1">({shop.reviews} reviews)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rental-shop-details">
+                      <div className="flex items-center mb-2">
+                        <MapPin className="w-4 h-4 text-gray-600 mr-2" />
+                        <span>{shop.location}</span>
+                      </div>
+                      <div className="flex items-center mb-2">
+                        <Clock className="w-4 h-4 text-gray-600 mr-2" />
+                        <span>{shop.hours}</span>
+                      </div>
+                      <div className="flex items-center mb-2">
+                        <Phone className="w-4 h-4 text-gray-600 mr-2" />
+                        <span>{shop.contact}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <ExternalLink className="w-4 h-4 text-gray-600 mr-2" />
+                        <a href={`https://${shop.website}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline" onClick={(e) => e.stopPropagation()}>
+                          {shop.website}
+                        </a>
+                      </div>
+                    </div>
+                    <div className="rental-shop-items">
+                      <h4 className="text-sm font-semibold mb-2">Available Equipment:</h4>
+                      <ul className="rental-items-list">
+                        {shop.items.slice(0, 3).map((item, index) => (
+                          <li key={index} className="rental-item">
+                            <span>{item.name}</span>
+                            <span className="rental-item-price">{item.price}</span>
+                          </li>
+                        ))}
+                        {shop.items.length > 3 && (
+                          <li className="text-sm text-blue-500">+ {shop.items.length - 3} more items</li>
+                        )}
+                      </ul>
+                    </div>
+                    <button className="view-rentals-button">View All Equipment</button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No rental shops available for this activity at the moment.</p>
+            )}
+
+            {selectedShop && (
+              <div className="rental-booking-modal">
+                <div className="rental-booking-content">
+                  <h3 className="text-xl font-bold mb-4">Rent Equipment from {selectedShop.name}</h3>
+
+                  <div className="rental-booking-details">
+                    <div className="rental-shop-info mb-4">
+                      <div className="flex items-center mb-2">
+                        <MapPin className="w-5 h-5 text-gray-600 mr-2" />
+                        <span>{selectedShop.location}</span>
+                      </div>
+                      <div className="flex items-center mb-2">
+                        <Clock className="w-5 h-5 text-gray-600 mr-2" />
+                        <span>{selectedShop.hours}</span>
+                      </div>
+                      <div className="flex items-center mb-2">
+                        <Star className="w-5 h-5 text-yellow-500 mr-2" />
+                        <span>
+                          {selectedShop.rating} ({selectedShop.reviews} reviews)
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="rental-items-selection mb-4">
+                      <h4 className="text-lg font-semibold mb-2">Select Equipment to Rent:</h4>
+                      <div className="rental-items-grid">
+                        {selectedShop.items.map((item, index) => (
+                          <div 
+                            key={index} 
+                            className={`rental-item-card ${selectedRentalItems.some(selectedItem => selectedItem.name === item.name) ? 'selected' : ''}`}
+                            onClick={() => handleRentalItemToggle(item)}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="rental-item-name">{item.name}</span>
+                              <span className="rental-item-price">{item.price}</span>
+                            </div>
+                            <div className="rental-item-availability">
+                              {item.available ? (
+                                <span className="text-green-500">Available</span>
+                              ) : (
+                                <span className="text-red-500">Out of stock</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rental-booking-form">
+                      <div className="form-group mb-4">
+                        <label htmlFor="rental-start-date" className="form-label">
+                          Start Date:
+                        </label>
+                        <input
+                          type="date"
+                          id="rental-start-date"
+                          className="form-input"
+                          value={rentalStartDate}
+                          onChange={(e) => setRentalStartDate(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="form-group mb-4">
+                        <label htmlFor="rental-days" className="form-label">
+                          Number of Days:
+                        </label>
+                        <div className="rental-days-selector">
+                          <button 
+                            className="rental-days-btn" 
+                            onClick={() => setRentalDays(Math.max(1, rentalDays - 1))}
+                            disabled={rentalDays <= 1}
+                          >
+                            -
+                          </button>
+                          <span className="rental-days-value">{rentalDays}</span>
+                          <button 
+                            className="rental-days-btn" 
+                            onClick={() => setRentalDays(rentalDays + 1)}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+
+                      {selectedRentalItems.length > 0 && (
+                        <div className="rental-summary mb-4">
+                          <h4 className="text-lg font-semibold mb-2">Rental Summary:</h4>
+                          <ul className="rental-summary-list">
+                            {selectedRentalItems.map((item, index) => (
+                              <li key={index} className="rental-summary-item">
+                                <span>{item.name}</span>
+                                <span>{item.price} × {rentalDays} days</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="rental-total">
+                            <span className="font-semibold">Total:</span>
+                            <span className="font-bold">{calculateRentalTotal()}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="rental-booking-actions">
+                        <button 
+                          className="book-rental-button" 
+                          onClick={handleRentalBooking}
+                          disabled={selectedRentalItems.length === 0}
+                        >
+                          <ShoppingCart className="w-4 h-4 mr-2" />
+                          Book Rental
+                        </button>
+                        <button className="cancel-button" onClick={() => setSelectedShop(null)}>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {activeTab === "reviews" && (
+        <section className="tour-section">
+          <h2>Reviews</h2>
+          <div className="reviews-container">
+            {tour.reviews.map((review, index) => (
+              <div key={index} className="review-card">
+                <h3>{review.title}</h3>
+                <div className="review-rating">Rating: {review.rating}/5</div>
+                <p>{review.comment}</p>
+                <p className="review-date">
+                  Written by {review.user} on {review.date}
+                </p>
+                {review.images && review.images.length > 0 && (
+                  <div className="review-images">
+                    {review.images.map((img, imgIndex) => (
+                      <img
+                        key={imgIndex}
+                        src={img || "/placeholder.svg"}
+                        alt={`Review image ${imgIndex + 1}`}
+                        className="review-image"
+                        onClick={() => handleImageClick(img)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="tour-section booking-section">
         <h2>Booking Information</h2>
-        <button className="book-now-button" onClick={handleBookNowClick}>Book Now</button>
+        <button className="book-now-button" onClick={handleBookNowClick}>
+          Book Now
+        </button>
       </section>
 
       {isModalOpen && (
         <div className="modal" onClick={handleModalClose}>
-          <img src={currentImage} alt="Enlarged" className="modal-image" />
+          <img src={currentImage || "/placeholder.svg"} alt="Enlarged" className="modal-image" />
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TourDetails;
+export default TourDetails

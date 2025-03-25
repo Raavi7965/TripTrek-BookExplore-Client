@@ -1,192 +1,765 @@
 .tour-details-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    animation: fadeIn 0.5s ease-in;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .tour-title {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.tour-title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.tour-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.tour-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  background-color: #f0f0f0;
+  position: relative;
+}
+
+.tour-image::before {
+  content: "Loading...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #666;
+  font-style: italic;
+}
+
+.tour-image:hover {
+  transform: scale(1.03);
+}
+
+.no-images-message {
+  width: 100%;
+  padding: 40px;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.tour-section {
+  margin-bottom: 30px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tour-section h2 {
+  color: #333;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #888;
+  margin-right: 10px;
+}
+
+.discounted-price {
+  font-weight: bold;
+  color: #e74c3c;
+  font-size: 1.2rem;
+}
+
+.tour-section ul {
+  padding-left: 20px;
+}
+
+.tour-section li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.reviews-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.review-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.review-card h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.review-rating {
+  color: #f39c12;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.review-date {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 10px;
+}
+
+.review-images {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.review-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.book-now-button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: block;
+  margin: 0 auto;
+}
+
+.book-now-button:hover {
+  background-color: #219653;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.weather-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.weather-container p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+/* Map styles */
+.map-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.map-container {
+  width: 100%;
+  height: 500px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-controls {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.map-controls button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.map-controls button:hover {
+  background-color: #2980b9;
+}
+
+/* Tabs styling */
+.tour-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.tab-button:hover {
+  background-color: #e0e0e0;
+}
+
+.tab-button.active {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+
+/* Safety Guidelines and Packing Checklist */
+.safety-guidelines {
+  margin-bottom: 30px;
+}
+
+.safety-tips-list {
+  list-style: none;
+  padding: 0;
+}
+
+.safety-tip-item {
+  margin-bottom: 12px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.checklist-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.checklist-item {
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.checklist-category {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 5px;
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 10px;
+  align-self: flex-start;
+}
+
+/* Weather and Alerts */
+.current-weather {
+  margin-bottom: 20px;
+}
+
+.weather-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.weather-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.weather-icon {
+  width: 80px;
+  height: 80px;
+}
+
+.weather-temp {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.weather-details {
+  flex: 1;
+}
+
+.weather-detail-item {
+  margin-bottom: 8px;
+  display: flex;
+}
+
+.weather-label {
+  font-weight: bold;
+  width: 100px;
+}
+
+.forecast-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.forecast-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+}
+
+.forecast-date {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.forecast-icon {
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.forecast-temp {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.alert-card {
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.alert-type {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.alert-dates {
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+/* Local Guides */
+.guides-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.guide-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.guide-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.guide-image-container {
+  height: 200px;
+  overflow: hidden;
+}
+
+.guide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.guide-details {
+  padding: 15px;
+}
+
+.guide-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.guide-specialization {
+  color: #3498db;
+  margin-bottom: 8px;
+}
+
+.guide-experience,
+.guide-languages {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.guide-rating {
+  margin: 8px 0;
+}
+
+.guide-price {
+  font-weight: bold;
+  color: #27ae60;
+}
+
+.guide-booking-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.guide-booking-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.booking-form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.book-guide-button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.cancel-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Gear Rentals */
+.rental-shops-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.rental-shop-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.rental-shop-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.rental-shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.rental-shop-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.rental-shop-details {
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.rental-items-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 15px;
+}
+
+.rental-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.rental-item-price {
+  font-weight: bold;
+  color: #27ae60;
+}
+
+.view-rentals-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.view-rentals-button:hover {
+  background-color: #2980b9;
+}
+
+.rental-booking-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.rental-booking-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.rental-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.rental-item-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rental-item-card:hover {
+  border-color: #3498db;
+}
+
+.rental-item-card.selected {
+  background-color: #e1f0fa;
+  border-color: #3498db;
+}
+
+.rental-days-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rental-days-btn {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.rental-days-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rental-days-value {
+  font-weight: bold;
+  min-width: 30px;
+  text-align: center;
+}
+
+.rental-summary-list {
+  list-style: none;
+  padding: 0;
+}
+
+.rental-summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #ddd;
+}
+
+.rental-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid #ddd;
+}
+
+.book-rental-button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-rental-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .tour-images {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
+    grid-template-columns: 1fr;
   }
-  
-  .tour-image {
+
+  .reviews-container,
+  .guides-container,
+  .checklist-container,
+  .forecast-container,
+  .rental-shops-container,
+  .rental-items-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tour-tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tab-button {
     width: 100%;
     max-width: 300px;
-    height: auto;
-    border-radius: 10px;
-    transition: transform 0.3s;
   }
-  
-  .tour-image:hover {
-    transform: scale(1.05);
-  }
-  
-  .tour-section {
-    margin-bottom: 20px;
-  }
-  
-  .tour-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-  }
-  
-  .tour-section p,
-  .tour-section ul {
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-  
-  .tour-section ul {
-    list-style-type: disc;
-    padding-left: 20px;
-  }
-  
-  .reviews-container {
-    display: flex;
+
+  .weather-card {
     flex-direction: column;
-    gap: 20px;
   }
-  
-  .review-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+
+  .weather-main {
+    margin-right: 0;
+    margin-bottom: 15px;
   }
-  
-  .review-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .review-user {
-    display: flex;
-    align-items: center;
-  }
-  
-  .user-initial {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #007bff;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    margin-right: 10px;
-  }
-  
-  .user-name {
-    font-weight: bold;
-  }
-  
-  .review-rating {
-    text-align: right;
-  }
-  
-  .review-type {
-    margin-left: 5px;
-    font-size: 0.9rem;
-    color: #555;
-  }
-  
-  .review-images {
-    display: flex;
+
+  .rental-booking-actions,
+  .booking-actions {
+    flex-direction: column;
     gap: 10px;
-    margin-top: 10px;
   }
-  
-  .review-image {
-    width: 80px;
-    height: auto;
-    border-radius: 5px;
+
+  .cancel-button {
+    width: 100%;
   }
-  
-  .read-more-button {
-    margin-top: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .read-more-button:hover {
-    background: #0056b3;
-  }
-  
-  .book-now-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .book-now-button:hover {
-    background-color: #218838;
-  }
-  
-  /* Animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    animation: fadeIn 0.3s ease-in;
-  }
-  
-  .modal-image {
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 10px;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+}
+

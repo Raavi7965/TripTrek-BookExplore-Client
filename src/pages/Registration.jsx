@@ -2,7 +2,20 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
-const Registration = () => {
+const tours = [
+  'Rishikesh Adventure Tour',
+  'Manali Adventure Expedition',
+  'Netrani Island Scuba Diving',
+  'Bangalore Trekking Adventure',
+  'Spiti Valley Trek',
+  'Kodai Lake Boating',
+  'Ladakh Bike Tour',
+  'Goa Water Sports',
+  'Meghalaya Caving Adventure',
+  'Sand Dune Safari & Camping'
+];
+
+const Registration = ({ setUser }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     userName: "",
@@ -13,11 +26,21 @@ const Registration = () => {
     phoneNumber: "",
     gender: "",
     dateOfBirth: "",
+    favorites: []
   });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFavoriteChange = (tour) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      favorites: prevData.favorites.includes(tour)
+        ? prevData.favorites.filter((fav) => fav !== tour)
+        : [...prevData.favorites, tour]
+    }));
   };
 
   const nextStep = () => setStep((prev) => prev + 1);
@@ -38,7 +61,8 @@ const Registration = () => {
         const data = await response.json();
         console.log("User Registered:", data);
         alert("Registration successful!");
-        navigate("/login"); // Redirect to login page after successful registration
+        setUser(data);
+        navigate("/user"); // Redirect to user page after successful registration
       } else {
         alert("Registration failed!");
       }
@@ -193,6 +217,32 @@ const Registration = () => {
                     <button type="button" onClick={prevStep} style={buttonStyle}>
                       Back
                     </button>
+                    <button type="button" onClick={nextStep} style={buttonStyle}>
+                      Next
+                    </button>
+                  </div>
+                </>
+              )}
+              {step === 5 && (
+                <>
+                  <h3>Select Your Favorite Tours</h3>
+                  <div className="favorites-selection" style={favoritesSelectionStyle}>
+                    {tours.map((tour) => (
+                      <label key={tour} style={labelStyle}>
+                        <input
+                          type="checkbox"
+                          value={tour}
+                          checked={formData.favorites.includes(tour)}
+                          onChange={() => handleFavoriteChange(tour)}
+                        />
+                        {tour}
+                      </label>
+                    ))}
+                  </div>
+                  <div style={buttonGroupStyle}>
+                    <button type="button" onClick={prevStep} style={buttonStyle}>
+                      Back
+                    </button>
                     <button type="submit" style={buttonStyle}>
                       Sign Up
                     </button>
@@ -293,5 +343,6 @@ const buttonStyle = {
 
 const buttonGroupStyle = { display: "flex", justifyContent: "space-between" };
 const dividerStyle = { textAlign: "center", margin: "1.5rem 0", color: "#2d3748", fontSize: "1.2rem" };
+const favoritesSelectionStyle = { display: "flex", flexWrap: "wrap", gap: "10px" };
 
 export default Registration;
