@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import './Bookmarks.css';
+import './bookmarks.css';
 
 const Bookmarks = ({ bookmarks }) => {
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./AllTours.css";
+import "./alltours.css";
 
 const AllTours = ({ bookmarks = [], setBookmarks }) => {
   const [searchTerm, setSearchTerm] = useState("");

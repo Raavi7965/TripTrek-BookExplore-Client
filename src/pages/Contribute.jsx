@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Contribute.css';
+import './contribute.css';
 
 const Contribute = () => {
   const [formData, setFormData] = useState({
