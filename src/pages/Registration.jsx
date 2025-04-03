@@ -49,29 +49,28 @@ const Registration = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://triptrek-bookexplore-server.onrender.com/users', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/api/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-        console.log("User Registered:", data);
         alert("Registration successful!");
         setUser(data);
-        navigate("/user"); // Redirect to user page after successful registration
+        navigate("/login"); // Redirect to login page after successful registration
       } else {
-        alert("Registration failed!");
+        const errorData = await response.json();
+        alert(`Registration failed: ${errorData.message || "Unknown error"}`);
       }
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again.");
     }
   };
-
   return (
     <GoogleOAuthProvider clientId="570232729613-l2rgql5g6pbocu2d4mir54rtn7efpomf.apps.googleusercontent.com">
       <div style={containerStyle}>

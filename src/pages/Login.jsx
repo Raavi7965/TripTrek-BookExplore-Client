@@ -21,31 +21,36 @@ const Login = ({ setIsAuthenticated, setUser }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await fetch("https://triptrek-bookexplore-server.onrender.com/users");
-      const users = await response.json();
-
-      const user = users.find(
-        (user) => user.email === email && user.password === password
-      );
-
-      if (user) {
-        setMessage("Login was successful!");
+      const response = await fetch("http://localhost:8080/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (response.ok) {
+        const user = await response.json();
+        setMessage("Login successful!");
         setIsAuthenticated(true);
         setUser(user);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("isAuthenticated", true);
         navigate("/"); // Navigate to the home page
+      } else if (response.status === 401) {
+        setMessage("Invalid password.");
+      } else if (response.status === 404) {
+        setMessage("User not found.");
       } else {
-        setMessage("Invalid email or password.");
+        setMessage("An error occurred. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
       setMessage("An error occurred. Please try again.");
     }
   };
-
   return (
     <div
       style={{
