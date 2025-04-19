@@ -5,11 +5,13 @@ const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
+    // Fetch bookings from localStorage
     const storedBookings = JSON.parse(localStorage.getItem("bookings")) || [];
     setBookings(storedBookings);
   }, []);
 
   const cancelBooking = (id) => {
+    // Remove the booking with the given ID
     const updatedBookings = bookings.filter((booking) => booking.id !== id);
     setBookings(updatedBookings);
     localStorage.setItem("bookings", JSON.stringify(updatedBookings));

@@ -572,9 +572,9 @@ const mockTourData = {
     price: "₹1,500",
     discountedPrice: "₹1,200",
     images: [
-      "https://images.unsplash.com/photo-1560523799-99a86c4c9c7c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1604335889388-9855925456ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1541848756-a6faeff29c09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://res.cloudinary.com/dyjbjmpqy/image/upload/v1706961565/adventour-tour-images/7c8b56c65a2bf64c_snkwfa.jpg",
+      "https://res.cloudinary.com/dyjbjmpqy/image/upload/v1706961566/adventour-tour-images/8d203e605cfd5118_mlqx9r.jpg",
+      "https://res.cloudinary.com/dyjbjmpqy/image/upload/v1706961575/adventour-tour-images/ff2e6398f6ffdc99_wru1vu.jpg",
     ],
     itinerary: [
       "Arrival in Rishikesh",
@@ -612,9 +612,9 @@ const mockTourData = {
     price: "₹2,000",
     discountedPrice: "₹1,800",
     images: [
-      "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1501785888024-9291476ff2c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716286536/adventour-tour-images/53cb901e908965cb_okybzk.jpg",
+      "https://www.seawatersports.com/images/activies/slide/trekking-in-manali-package.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVOE9bL1J7VU-hm07fCd2Bun59UcReXnQfUw&s",
     ],
     itinerary: [
       "Arrival in Manali",
@@ -649,9 +649,9 @@ const mockTourData = {
     price: "₹3,000",
     discountedPrice: "₹2,700",
     images: [
-      "https://images.unsplash.com/photo-1579621954041-686b65981809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-      "https://images.unsplash.com/photo-1552510388-4df5185794fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1563795586564-3723423dd404?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://dtmag.com/wp-content/uploads/2015/09/iStock_000028077202_600.jpg",
+      "https://b3619545.smushcdn.com/3619545/wp-content/uploads/2023/09/Deep-Dive-Dubai-kids-first-Nomad-dive-1024x683.jpg?lossy=2&strip=1&webp=1",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVOE9bL1J7VU-hm07fCd2Bun59UcReXnQfUw&s",
     ],
     itinerary: [
       "Arrival at dive site",
@@ -690,9 +690,9 @@ const mockTourData = {
     price: "₹1,000",
     discountedPrice: "₹800",
     images: [
-      "https://images.unsplash.com/photo-1600987334511-65a5c69eaffc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1617588455974-2cd33b4ca409?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1628977434344-ba978411544c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzKDuFYI3r2jlWU_S3-lip8iKZ_KGE3ruLgQ&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr2sN2GH2RHoTyj2fEmieGMU1EsrCL_2IQbF43DxMZwiHXOJ6MZN6Pm6MpiWf0EL5ApwY&usqp=CAU",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7kCSAv9aQM1CMcwQ1Gb91W9-n7FN7GjgIKzpsRS9ujkriC7kO-k2DXM4QRKKohWvcHAQ&usqp=CAU",
     ],
     itinerary: [
       "Visit Bangalore Palace",
@@ -729,9 +729,9 @@ const mockTourData = {
     price: "₹4,500",
     discountedPrice: "₹4,000",
     images: [
-      "https://images.unsplash.com/photo-1507518858883-755ca39f3bc0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1547754980-c1f3906fba51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1547754980-c1f3906fba51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://www.himalayanhikers.in/wp-content/uploads/2023/05/WhatsApp-Image-2023-05-21-at-04.45.52-1.jpeg",
+      "https://www.potala-himalaya.com/uploads/potala_himalaya/package/main/658a970a1aa01173_spiti_valley_tour_2024.png",
+      "https://www.treksandtrails.org/system/images/000/271/930/94cb5f26c417261fd18fb18232d721b6/original/Spiti-homestay-trek.jpg?1648718310",
     ],
     itinerary: ["Arrival in Spiti Valley", "Visit Key Monastery", "Explore Chandratal Lake", "Visit Kaza", "Departure"],
     reviews: [
@@ -762,9 +762,9 @@ const mockTourData = {
     price: "₹2,500",
     discountedPrice: "₹2,200",
     images: [
-      "https://images.unsplash.com/photo-1617588455974-2cd33b4ca409?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1628977434344-ba978411544c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1600987334511-65a5c69eaffc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://c8.alamy.com/comp/GWBM2F/boating-in-kodaikanal-lake-GWBM2F.jpg",
+      "https://www.ttdconline.com/_next/boat-house/kodaikanal/3.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPVNs3L7j0UI3HldBMRbS6qaTEwSKAzFEUeA&s",
     ],
     itinerary: [
       "Visit Kodaikanal Lake",
@@ -801,9 +801,9 @@ const mockTourData = {
     price: "₹5,500",
     discountedPrice: "₹5,000",
     images: [
-      "https://images.unsplash.com/photo-1507518858883-755ca39f3bc0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1547754980-c1f3906fba51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1547754980-c1f3906fba51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://imgcld.yatra.com/ytimages/image/upload/v1517482103/AdvNation/ANN_TRP530/Bike-Expedition-Ladakh_1439472639_F6YkoV.jpg",
+      "https://vl-prod-static.b-cdn.net/system/images/000/300/878/160b26bc2e280d83db6ada2224d6107e/x800gt/DSC00399.jpg?1594207788",
+      "https://discoverlehladakh.in/wp-content/uploads/2021/02/Ladakh-bike-tour-package-banner.jpg",
     ],
     itinerary: ["Arrival in Ladakh", "Visit Key Monastery", "Explore Chandratal Lake", "Visit Kaza", "Departure"],
     reviews: [
@@ -835,9 +835,9 @@ const mockTourData = {
     price: "₹2,000",
     discountedPrice: "₹1,800",
     images: [
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1596464716127-f2a82984de30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQk9Hm6kxpccRODqV829QFsRu9k4eOwZMMu6g&s",
+      "https://farm9.staticflickr.com/8227/29070149562_2ba5c527fd_z.jpg",
+      "https://blog.moustachescapes.com/wp-content/uploads/2022/11/608f747c5a123_1620014204-1.jpg",
     ],
     itinerary: [
       "Arrival at Baga Beach",

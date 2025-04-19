@@ -17,4 +17,30 @@
     font-weight: bold;
     margin-top: 10px;
   }
+  .booking-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
   
+  .booking-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .booking-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .no-results img {
+    width: 300px;
+    margin-top: 20px;
+  }
