@@ -50,14 +50,14 @@ const Registration = ({ setUser }) => {
     e.preventDefault();
     try {
       // Check if user already exists (by email)
-      const checkRes = await fetch(`http://localhost:3000/users?email=${encodeURIComponent(formData.email)}`);
+  const checkRes = await fetch(`https://triptrek-bookexplore-server.onrender.com/users?email=${encodeURIComponent(formData.email)}`);
       const existingUsers = await checkRes.json();
       if (existingUsers.length > 0) {
         alert("A user with this email already exists.");
         return;
       }
       // Register new user
-      const response = await fetch("http://localhost:3000/users", {
+  const response = await fetch("https://triptrek-bookexplore-server.onrender.com/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

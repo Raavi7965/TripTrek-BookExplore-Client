@@ -24,7 +24,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
     try {
       // JSON server: GET /users?email=...&password=...
       const response = await fetch(
-        `http://localhost:3000/users?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+        `https://triptrek-bookexplore-server.onrender.com/users?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
       );
       if (response.ok) {
         const users = await response.json();
