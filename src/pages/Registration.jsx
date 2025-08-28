@@ -49,22 +49,28 @@ const Registration = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8080/api/register", {
+      // Check if user already exists (by email)
+      const checkRes = await fetch(`http://localhost:3000/users?email=${encodeURIComponent(formData.email)}`);
+      const existingUsers = await checkRes.json();
+      if (existingUsers.length > 0) {
+        alert("A user with this email already exists.");
+        return;
+      }
+      // Register new user
+      const response = await fetch("http://localhost:3000/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-  
       if (response.ok) {
         const data = await response.json();
         alert("Registration successful!");
         setUser(data);
-        navigate("/login"); // Redirect to login page after successful registration
+        navigate("/login");
       } else {
-        const errorData = await response.json();
-        alert(`Registration failed: ${errorData.message || "Unknown error"}`);
+        alert("Registration failed. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);

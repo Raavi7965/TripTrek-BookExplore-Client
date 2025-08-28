@@ -2,27 +2,42 @@ import React, { useState } from "react";
 import { FaRegEye } from "react-icons/fa"; // For eye icon
 import "./PaymentForm.css";
 
-const PaymentForm = () => {
+const PaymentForm = ({ trip }) => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
   const [name, setName] = useState("");
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
+  // Use trip prop or fallback to defaults
+  const bookingTrip = trip || {
+    name: "Trip to Rishikesh",
+    date: "2025-04-10",
+    image: "https://example.com/rishikesh.jpg",
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Simulate booking details
+    // Prevent booking for past dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tripDate = new Date(bookingTrip.date);
+    tripDate.setHours(0, 0, 0, 0);
+    if (tripDate < today) {
+      alert("You cannot book a trip for a past date. Please select today or a future date.");
+      return;
+    }
+
     const newBooking = {
-      id: Date.now(), // Unique ID for the booking
-      name: "Trip to Rishikesh", // Example trip name
-      date: "2025-04-10", // Example trip booking date
-      bookingDate: new Date().toLocaleDateString(), // Current date (when the booking is made)
-      status: "Confirmed", // Booking status
-      image: "https://example.com/rishikesh.jpg", // Example trip image
+      id: Date.now(),
+      name: bookingTrip.name,
+      date: bookingTrip.date,
+      bookingDate: new Date().toLocaleDateString(),
+      status: "Confirmed",
+      image: bookingTrip.image,
     };
 
-    // Save booking to localStorage
     const storedBookings = JSON.parse(localStorage.getItem("bookings")) || [];
     storedBookings.push(newBooking);
     localStorage.setItem("bookings", JSON.stringify(storedBookings));
@@ -41,6 +56,9 @@ const PaymentForm = () => {
         </div>
 
         <h2 className="payment-title">Credit Card</h2>
+        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+          <strong>Booking:</strong> {bookingTrip.name}
+        </div>
 
         <form className="payment-form" onSubmit={handleSubmit}>
           <label>Cardholder Name</label>

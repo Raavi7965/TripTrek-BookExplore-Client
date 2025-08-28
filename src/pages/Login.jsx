@@ -21,28 +21,25 @@ const Login = ({ setIsAuthenticated, setUser }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
     try {
-      const response = await fetch("http://localhost:8080/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-  
+      // JSON server: GET /users?email=...&password=...
+      const response = await fetch(
+        `http://localhost:3000/users?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      );
       if (response.ok) {
-        const user = await response.json();
-        setMessage("Login successful!");
-        setIsAuthenticated(true);
-        setUser(user);
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("isAuthenticated", true);
-        navigate("/"); // Navigate to the home page
-      } else if (response.status === 401) {
-        setMessage("Invalid password.");
-      } else if (response.status === 404) {
-        setMessage("User not found.");
+        const users = await response.json();
+        if (users.length > 0) {
+          const user = users[0];
+          setMessage("Login successful!");
+          setIsAuthenticated(true);
+          setUser(user);
+          localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("isAuthenticated", true);
+          navigate("/");
+        } else {
+          // No user found with this email/password
+          setMessage("Invalid email or password.");
+        }
       } else {
         setMessage("An error occurred. Please try again.");
       }
