@@ -1492,21 +1492,29 @@ const TourDetails = () => {
       alert("Please select a start date for your rental.")
       return
     }
-
     if (selectedRentalItems.length === 0) {
       alert("Please select at least one item to rent.")
       return
     }
-
-    const itemsList = selectedRentalItems.map((item) => item.name).join(", ")
-    alert(
-      `Rental booking confirmed!\n\nShop: ${selectedShop.name}\nItems: ${itemsList}\nDuration: ${rentalDays} days\nStart Date: ${rentalStartDate}\nTotal: ${calculateRentalTotal()}`,
-    )
-
-    setSelectedShop(null)
-    setSelectedRentalItems([])
-    setRentalDays(1)
-    setRentalStartDate("")
+    // Add rental to cart
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push({
+      type: "rental",
+      shop: selectedShop.name,
+      items: selectedRentalItems.map((item) => ({ name: item.name, price: item.price })),
+      rentalDays,
+      rentalStartDate,
+      total: calculateRentalTotal(),
+      tourId: tour.id,
+      tourName: tour.name,
+      dateAdded: new Date().toISOString(),
+    });
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Rental items added to cart!");
+    setSelectedShop(null);
+    setSelectedRentalItems([]);
+    setRentalDays(1);
+    setRentalStartDate("");
   }
 
   const getWeatherIcon = (condition) => {
@@ -1882,6 +1890,7 @@ const TourDetails = () => {
                           id="booking-date"
                           className="form-input"
                           value={bookingDate}
+                          min={new Date().toISOString().split('T')[0]}
                           onChange={(e) => setBookingDate(e.target.value)}
                         />
                       </div>
@@ -2032,6 +2041,7 @@ const TourDetails = () => {
                           id="rental-start-date"
                           className="form-input"
                           value={rentalStartDate}
+                          min={new Date().toISOString().split('T')[0]}
                           onChange={(e) => setRentalStartDate(e.target.value)}
                         />
                       </div>

@@ -9,25 +9,26 @@ const PaymentForm = ({ trip }) => {
   const [name, setName] = useState("");
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  // Use trip prop or fallback to defaults
-  const bookingTrip = trip || {
-    name: "Trip to Rishikesh",
-    date: "2025-04-10",
-    image: "https://example.com/rishikesh.jpg",
-  };
+  // Dropdown menu of all trips for selection
+  const allTours = [
+    { id: 1, name: 'Rishikesh Adventure Tour', date: '2025-04-10', image: 'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1706961565/adventour-tour-images/7c8b56c65a2bf64c_snkwfa.jpg' },
+    { id: 2, name: 'Manali Adventure Expedition', date: '2025-05-15', image: 'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716286536/adventour-tour-images/53cb901e908965cb_okybzk.jpg' },
+    { id: 3, name: 'Netrani Island Scuba Diving', date: '2025-06-01', image: 'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716398172/adventour-tour-images/00d7dbc98ead7d8e_rmhoyj.jpg' },
+    { id: 4, name: 'Bangalore Trekking Adventure', date: '2025-06-10', image: 'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716400335/adventour-tour-images/fd2c1244899bedc2_tpyrmo.jpg' },
+    { id: 5, name: 'Spiti Valley Trek', date: '2025-07-01', image: 'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716450029/adventour-tour-images/b31873046c47eaf0_cdnqzp.jpg' },
+    { id: 6, name: 'Kodai Lake Boating', date: '2025-07-15', image: 'https://res.cloudinary.com/dyjbjmpqy/image/upload/v1716454849/adventour-tour-images/726ec4b34adf3b28_qihos0.jpg' },
+    { id: 7, name: 'Ladakh Bike Tour', date: '2025-08-01', image: 'https://thedreamridersgroup.com/listing/9/Explore%20Ladakh%20on%20two%20wheels,Morey%20Plains.jpg' },
+    { id: 8, name: 'Goa Water Sports', date: '2025-08-10', image: 'https://goaexplocation.com/admin/images/activities/125245011644banana_ride_in_goa.jpeg' },
+    { id: 9, name: 'Meghalaya Caving Adventure', date: '2025-09-01', image: 'https://natureworldwide.in/wp-content/uploads/2023/10/Nohkalikai-Fall-1024x1281.jpg' },
+    { id: 10, name: 'Sand Dune Safari & Camping', date: '2025-09-15', image: 'https://travelogyindia.b-cdn.net/storage/app/upload/lodhruva.jpg' }
+  ];
+  const [selectedTourId, setSelectedTourId] = useState(allTours[0].id);
+  const bookingTrip = allTours.find(t => t.id === selectedTourId);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Prevent booking for past dates
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tripDate = new Date(bookingTrip.date);
-    tripDate.setHours(0, 0, 0, 0);
-    if (tripDate < today) {
-      alert("You cannot book a trip for a past date. Please select today or a future date.");
-      return;
-    }
+    
 
     const newBooking = {
       id: Date.now(),
@@ -56,6 +57,20 @@ const PaymentForm = ({ trip }) => {
         </div>
 
         <h2 className="payment-title">Credit Card</h2>
+        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+          <label>
+            <strong>Select Trip to Book: </strong>
+            <select
+              value={selectedTourId}
+              onChange={e => setSelectedTourId(Number(e.target.value))}
+              style={{ marginLeft: 8 }}
+            >
+              {allTours.map(tour => (
+                <option value={tour.id} key={tour.id}>{tour.name}</option>
+              ))}
+            </select>
+          </label>
+        </div>
         <div style={{ textAlign: "center", marginBottom: "1rem" }}>
           <strong>Booking:</strong> {bookingTrip.name}
         </div>

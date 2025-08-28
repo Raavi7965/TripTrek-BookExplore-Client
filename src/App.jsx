@@ -1,3 +1,4 @@
+import Cart from "./pages/Cart";
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -63,6 +64,7 @@ const App = () => {
             } />
             <Route path="/bookings" element={<MyBookings />} />
             <Route path="/profile-edit" element={<ProfileEdit user={user} />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/payment" element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <PaymentForm />

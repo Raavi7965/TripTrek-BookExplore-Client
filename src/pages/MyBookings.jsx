@@ -27,7 +27,9 @@ const MyBookings = () => {
             {bookings.map((booking) => (
               <li key={booking.id} className="booking-item">
                 <h3>{booking.name}</h3>
-                <p>Date: {booking.date}</p>
+                {booking.image && (
+                  <img src={booking.image} alt={booking.name} style={{ maxWidth: '200px', borderRadius: '8px' }} />
+                )}
                 <p>Status: {booking.status}</p>
                 <button className="cancel-button" onClick={() => cancelBooking(booking.id)}>
                   Cancel Booking

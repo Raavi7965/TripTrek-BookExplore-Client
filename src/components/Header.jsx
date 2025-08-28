@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser, logout }) => {
@@ -6,9 +6,39 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser, logout }) 
   const navigate = useNavigate();
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
   const [showProfile, setShowProfile] = useState(false);
+  const [profileClicked, setProfileClicked] = useState(false);
+  const profileTimer = useRef(null);
+  const [cartCount, setCartCount] = useState(0);
 
-  const toggleProfile = () => {
-    setShowProfile(!showProfile);
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartCount(cart.length);
+    };
+    updateCartCount();
+    window.addEventListener("storage", updateCartCount);
+    return () => window.removeEventListener("storage", updateCartCount);
+  }, []);
+
+  // Show profile menu on mouse enter, hide after 3s unless clicked
+  const handleProfileMouseEnter = () => {
+    setShowProfile(true);
+    setProfileClicked(false);
+    if (profileTimer.current) clearTimeout(profileTimer.current);
+    profileTimer.current = setTimeout(() => {
+      if (!profileClicked) setShowProfile(false);
+    }, 3000);
+  };
+  const handleProfileMouseLeave = () => {
+    if (!profileClicked) setShowProfile(false);
+    if (profileTimer.current) clearTimeout(profileTimer.current);
+  };
+  // Mark profile as clicked and keep open on any interaction inside dropdown
+  const handleProfileDropdownClick = (e) => {
+    setProfileClicked(true);
+    if (profileTimer.current) clearTimeout(profileTimer.current);
+    // Prevent click from bubbling to parent (in case of nested elements)
+    e.stopPropagation();
   };
 
   const handleLoginRedirect = (e) => {
@@ -49,6 +79,22 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser, logout }) 
         <Link to="/bookings" style={getLinkStyle("/bookings")} onClick={handleLoginRedirect}>My Bookings</Link>
         <Link to="/dashboard" style={getLinkStyle("/dashboard")} onClick={handleLoginRedirect}>Contribute</Link>
         <Link to="/group-adventure-planning" style={getLinkStyle("/group-adventure-planning")}>Group Adventure Planning</Link>
+        <Link to="/cart" style={{ ...styles.link, position: 'relative' }}>
+          🛒 Cart
+          {cartCount > 0 && (
+            <span style={{
+              position: 'absolute',
+              top: -8,
+              right: -18,
+              background: 'red',
+              color: 'white',
+              borderRadius: '50%',
+              padding: '2px 7px',
+              fontSize: '0.8rem',
+              fontWeight: 'bold',
+            }}>{cartCount}</span>
+          )}
+        </Link>
       </nav>
 
       {/* Right-aligned Register and Login (highlighted) */}
@@ -61,15 +107,22 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser, logout }) 
 
       {/* Profile photo and username */}
       {isAuthenticated && (
-        <div style={styles.profileContainer}>
+        <div
+          style={styles.profileContainer}
+          onMouseEnter={handleProfileMouseEnter}
+          onMouseLeave={handleProfileMouseLeave}
+        >
           <img
-            src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg" // Placeholder image, replace with actual profile photo URL
+            src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg"
             alt="Profile"
             style={styles.profilePhoto}
-            onClick={toggleProfile}
           />
           {showProfile && (
-            <div style={styles.profileDropdown}>
+            <div
+              style={styles.profileDropdown}
+              onClick={handleProfileDropdownClick}
+              onMouseDown={handleProfileDropdownClick}
+            >
               <p style={styles.profileUsername}>{user.userName}</p>
               <p style={styles.profileEmail}>{user.email}</p>
               <button style={styles.changePasswordButton} onClick={handleChangePassword}>Change Password</button>
