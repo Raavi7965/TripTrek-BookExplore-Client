@@ -2,12 +2,9 @@
 
 This project is a Java Full Stack web application built as a 3rd Year, 2nd Semester project.
 The platform helps users plan adventure trips and explore various destinations interactively.
-🚀 Adventure Trip Planner
 
-This project is a Java Full Stack web application built as a 3rd Year, 2nd Semester project.
-The platform helps users plan adventure trips and explore various destinations interactively.
 
-👨‍💻 Project Contributors
+## 👨‍💻 Project Contributors
 
 Venkatesh
 
@@ -15,11 +12,11 @@ Durga Prasad
 
 Srinivas
 
-🛠️ Technologies Used
+## 🛠️ Technologies Used
 
 This project is built using:
 
-Frontend:
+## Frontend:
 
 React (with Vite for fast development and HMR)
 
@@ -27,23 +24,23 @@ CSS (custom styling or React.css)
 
 JSON Server (for simulating REST APIs during development)
 
-Backend:
+## Backend:
 
 MongoDB (for database storage)
 
 Java (Full Stack) — likely Spring Boot or similar for the backend
 
-⚙️ Getting Started
+## ⚙️ Getting Started
 
-Follow these steps to set up and run the project locally:
-
-Step 1: Clone the repository
+## Follow these steps to set up and run the project locally:
+```
+## Step 1: Clone the repository
 git clone <YOUR_GIT_URL>
 
-Step 2: Navigate to the project directory
+## Step 2: Navigate to the project directory
 cd <YOUR_PROJECT_NAME>
 
-Step 3: Install dependencies
+## Step 3: Install dependencies
 npm install
 
 Step 4: Start the development server
@@ -52,7 +49,7 @@ npm run dev
 
 Your app will now be running at http://localhost:5173/
  (by default).
-
+```
 🧑‍💻 Editing the Project
 Option 1: Edit Directly in GitHub
 
