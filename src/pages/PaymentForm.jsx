@@ -55,63 +55,12 @@ const PaymentForm = ({ trip }) => {
       setPaymentSuccess(true);
       // In a real app you'd call your payment API here.
     } else {
-      // Offline / agency payment: generate reservation and invoice download
-      generateInvoice(newBooking);
+      // Offline / agency payment: just save the booking
       setPaymentSuccess(true);
     }
   };
 
-  const generateInvoice = (booking) => {
-    const invoice = {
-      invoiceNumber: `INV-${booking.id}-${Date.now()}`,
-      date: new Date().toLocaleDateString(),
-      customerName: booking.userName,
-      adventure: booking.name,
-      amount: booking.amount,
-      paymentMethod: booking.paymentMethod,
-      paymentStatus: booking.paymentStatus
-    };
-
-    const invoiceHtml = `
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial; padding: 20px; }
-            .invoice-header { text-align: center; margin-bottom: 30px; }
-            .invoice-details { margin-bottom: 20px; }
-            .amount { font-size: 24px; color: #0077be; }
-          </style>
-        </head>
-        <body>
-          <div class="invoice-header">
-            <h1>TripTrek Booking Invoice</h1>
-            <p>Invoice #: ${invoice.invoiceNumber}</p>
-            <p>Date: ${invoice.date}</p>
-          </div>
-          <div class="invoice-details">
-            <p><strong>Customer:</strong> ${invoice.customerName}</p>
-            <p><strong>Adventure:</strong> ${invoice.adventure}</p>
-            <p><strong>Payment Method:</strong> ${invoice.paymentMethod}</p>
-            <p><strong>Status:</strong> ${invoice.paymentStatus}</p>
-            <p class="amount"><strong>Amount:</strong> ${invoice.amount.toLocaleString()}</p>
-          </div>
-          <div>
-            <p><em>Thank you for choosing TripTrek!</em></p>
-          </div>
-        </body>
-      </html>
-    `;
-
-    const blob = new Blob([invoiceHtml], { type: 'text/html' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `invoice-${booking.id}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  };
+  // Removed generateInvoice function as invoices are now only available in MyBookings
 
   return (
     <div className="payment-container">
@@ -215,7 +164,11 @@ const PaymentForm = ({ trip }) => {
           </div>
         )}
 
-        {paymentSuccess && <div className="success-message">Booking created. Check your downloads for the invoice (if applicable).</div>}
+        {paymentSuccess && (
+          <div className="success-message">
+            Booking created successfully! You can download your invoice from the My Bookings page.
+          </div>
+        )}
       </div>
     </div>
   );

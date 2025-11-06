@@ -19,13 +19,33 @@
   }
   .booking-item {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 15px;
     margin-bottom: 20px;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
+  }
+
+  .booking-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .invoice-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  .invoice-button:hover {
+    background-color: #45a049;
   }
   
   .booking-image {

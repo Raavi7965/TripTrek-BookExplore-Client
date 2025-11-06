@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import html2pdf from 'html2pdf.js';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -89,50 +90,75 @@ const AdminDashboard = () => {
       adventure: booking.adventureName,
       amount: booking.amount,
       paymentMethod: booking.paymentMethod,
-      paymentStatus: booking.paymentStatus
+      paymentStatus: booking.paymentStatus,
+      bookingDate: booking.bookingDate
     };
 
     // Create invoice HTML
     const invoiceHtml = `
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial; padding: 20px; }
-            .invoice-header { text-align: center; margin-bottom: 30px; }
-            .invoice-details { margin-bottom: 20px; }
-            .amount { font-size: 24px; color: #0077be; }
-          </style>
-        </head>
-        <body>
-          <div class="invoice-header">
-            <h1>TripTrek Booking Invoice</h1>
-            <p>Invoice #: ${invoice.invoiceNumber}</p>
-            <p>Date: ${invoice.date}</p>
-          </div>
-          <div class="invoice-details">
-            <p><strong>Customer:</strong> ${invoice.customerName}</p>
-            <p><strong>Adventure:</strong> ${invoice.adventure}</p>
-            <p><strong>Payment Method:</strong> ${invoice.paymentMethod}</p>
-            <p><strong>Status:</strong> ${invoice.paymentStatus}</p>
-            <p class="amount"><strong>Amount:</strong> ₹${invoice.amount.toLocaleString()}</p>
-          </div>
-          <div>
-            <p><em>Thank you for choosing TripTrek!</em></p>
-          </div>
-        </body>
-      </html>
+      <div id="invoice" style="font-family: Arial; padding: 20px; max-width: 800px; margin: auto;">
+        <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #0077be; padding-bottom: 20px;">
+          <h1 style="color: #0077be; margin-bottom: 10px;">TripTrek Booking Invoice</h1>
+          <p style="margin: 5px;">Invoice #: ${invoice.invoiceNumber}</p>
+          <p style="margin: 5px;">Generated on: ${invoice.date}</p>
+        </div>
+        <div style="margin-bottom: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px;"><strong>Customer Name:</strong></td>
+              <td style="padding: 8px;">${invoice.customerName}</td>
+              <td style="padding: 8px;"><strong>Booking Date:</strong></td>
+              <td style="padding: 8px;">${invoice.bookingDate}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px;"><strong>Adventure:</strong></td>
+              <td style="padding: 8px;">${invoice.adventure}</td>
+              <td style="padding: 8px;"><strong>Payment Status:</strong></td>
+              <td style="padding: 8px;">${invoice.paymentStatus}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px;"><strong>Payment Method:</strong></td>
+              <td style="padding: 8px;">${invoice.paymentMethod}</td>
+              <td style="padding: 8px;"><strong>Amount:</strong></td>
+              <td style="padding: 8px; font-size: 18px; color: #0077be;">₹${invoice.amount.toLocaleString()}</td>
+            </tr>
+          </table>
+        </div>
+        <div style="margin-top: 40px; text-align: center; color: #666;">
+          <p><em>Thank you for choosing TripTrek!</em></p>
+          <p style="font-size: 12px;">This is a computer-generated invoice and does not require a signature.</p>
+        </div>
+      </div>
     `;
 
-    // Create blob and download
-    const blob = new Blob([invoiceHtml], { type: 'text/html' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `invoice-${booking.id}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    // Create a container for the invoice
+    const container = document.createElement('div');
+    container.innerHTML = invoiceHtml;
+    document.body.appendChild(container);
+
+    // Configure pdf options
+    const options = {
+      margin: 10,
+      filename: `TripTrek-Invoice-${booking.id}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    try {
+      // Generate PDF
+      const element = container.firstChild;
+      await html2pdf().from(element).set(options).save();
+      
+      // Show success message
+      alert('Invoice has been generated and downloaded successfully!');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    } finally {
+      // Clean up
+      document.body.removeChild(container);
+    }
   };
 
   return (

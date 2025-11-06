@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "html2pdf.js": "^0.12.1",
     "lucide-react": "^0.482.0",
     "mongoose": "^8.12.1",
     "react": "^19.0.0",
