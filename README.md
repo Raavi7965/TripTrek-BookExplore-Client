@@ -1,4 +1,4 @@
-#W🚀 Adventure Trip Planner
+## 🚀 Adventure Trip Planner
 
 This project is a Java Full Stack web application built as a 3rd Year, 2nd Semester project.
 The platform helps users plan adventure trips and explore various destinations interactively.
