@@ -21,6 +21,25 @@ const Login = ({ setIsAuthenticated, setUser }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    // Developer/admin backdoor: accept a few admin username formats and grant admin role locally.
+    // NOTE: This is intentionally simple for dev/testing. Remove or secure for production.
+    const ADMIN_PASSWORD = 'Raavi@7965';
+    const adminUsernames = ['venkateshadmin', 'venkatesh@admin', 'venkatesh@admin.com', 'venkateshadmin@example.com'];
+    if (adminUsernames.includes(email) && password === ADMIN_PASSWORD) {
+      const adminUser = {
+        id: 0,
+        userName: 'venkateshadmin',
+        email: email,
+        role: 'admin'
+      };
+      setMessage('Admin login successful!');
+      setIsAuthenticated(true);
+      setUser(adminUser);
+      localStorage.setItem('user', JSON.stringify(adminUser));
+      localStorage.setItem('isAuthenticated', true);
+      navigate('/admin');
+      return;
+    }
     try {
       // JSON server: GET /users?email=...&password=...
       const response = await fetch(
@@ -35,7 +54,13 @@ const Login = ({ setIsAuthenticated, setUser }) => {
           setUser(user);
           localStorage.setItem("user", JSON.stringify(user));
           localStorage.setItem("isAuthenticated", true);
-          navigate("/");
+          // If the user from server has admin role, go to admin dashboard
+          const role = user.role || user.userRole || user.roleName;
+          if (role && role.toString().toLowerCase() === 'admin') {
+            navigate('/admin');
+          } else {
+            navigate('/');
+          }
         } else {
           // No user found with this email/password
           setMessage("Invalid email or password.");

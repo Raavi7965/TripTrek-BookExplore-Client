@@ -79,6 +79,9 @@ const Header = ({ isAuthenticated, user, setIsAuthenticated, setUser, logout }) 
         <Link to="/bookings" style={getLinkStyle("/bookings")} onClick={handleLoginRedirect}>My Bookings</Link>
         <Link to="/dashboard" style={getLinkStyle("/dashboard")} onClick={handleLoginRedirect}>Contribute</Link>
         <Link to="/group-adventure-planning" style={getLinkStyle("/group-adventure-planning")}>Group Adventure Planning</Link>
+        {user && (user.role === "admin" || user.userRole === "admin") && (
+          <Link to="/admin" style={getLinkStyle("/admin")}>Admin</Link>
+        )}
         <Link to="/cart" style={{ ...styles.link, position: 'relative' }}>
           🛒 Cart
           {cartCount > 0 && (

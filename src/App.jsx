@@ -2,6 +2,7 @@ import Cart from "./pages/Cart";
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminDashboard from "./pages/AdminDashboard";
 import Bookmarks from "./pages/Bookmarks";
 import MyBookings from "./pages/MyBookings";
 import Dashboard from "./pages/Dashboard";
@@ -58,7 +59,7 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/contribute" element={<Contribute />} />
             <Route path="/bookmarks" element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProtectedRoute isAuthenticated={isAuthenticated} user={user}>
                 <Bookmarks bookmarks={bookmarks} />
               </ProtectedRoute>
             } />
@@ -66,8 +67,14 @@ const App = () => {
             <Route path="/profile-edit" element={<ProfileEdit user={user} />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/payment" element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProtectedRoute isAuthenticated={isAuthenticated} user={user}>
                 <PaymentForm />
+              </ProtectedRoute>
+            } />
+            {/* Admin-only route */}
+            <Route path="/admin" element={
+              <ProtectedRoute isAuthenticated={isAuthenticated} user={user} allowedRoles={["admin"]}>
+                <AdminDashboard />
               </ProtectedRoute>
             } />
             <Route path="/reset-password" element={<ResetPassword />} />
