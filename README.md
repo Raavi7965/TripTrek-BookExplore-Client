@@ -1,55 +1,85 @@
-# React + Vite
+#W🚀 Adventure Trip Planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a Java Full Stack web application built as a 3rd Year, 2nd Semester project.
+The platform helps users plan adventure trips and explore various destinations interactively.
+🚀 Adventure Trip Planner
 
-Currently, two official plugins are available:
+This project is a Java Full Stack web application built as a 3rd Year, 2nd Semester project.
+The platform helps users plan adventure trips and explore various destinations interactively.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-# Welcome to your  project
+👨‍💻 Project Contributors
 
-## Project info
-3 Year 2 Sem project completed building at java full stack 
-This platform helps to plan a Adventure Trip and explore the places 3 members to work on it 
-1.VENKATESH
-2.DURGA PRASAD
-3.SRINIVAS
+Venkatesh
 
-# Step 1: Clone the repository using the project's Git URL.
+Durga Prasad
+
+Srinivas
+
+🛠️ Technologies Used
+
+This project is built using:
+
+Frontend:
+
+React (with Vite for fast development and HMR)
+
+CSS (custom styling or React.css)
+
+JSON Server (for simulating REST APIs during development)
+
+Backend:
+
+MongoDB (for database storage)
+
+Java (Full Stack) — likely Spring Boot or similar for the backend
+
+⚙️ Getting Started
+
+Follow these steps to set up and run the project locally:
+
+Step 1: Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+Step 2: Navigate to the project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+Step 3: Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Step 4: Start the development server
 npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
 
 
+Your app will now be running at http://localhost:5173/
+ (by default).
+
+🧑‍💻 Editing the Project
+Option 1: Edit Directly in GitHub
+
+Navigate to the file you want to edit.
+
+Click the ✏️ Edit (pencil) icon.
+
+Make changes and commit them directly.
+
+Option 2: Use GitHub Codespaces
+
+Go to your repository’s main page.
+
+Click the green Code button.
+
+Choose the Codespaces tab.
+
+Click New Codespace to open a cloud-based VS Code environment.
+
+Edit and commit changes right from the Codespace.
+
+⚡ Vite React Plugins
+
+This project uses one of the following React plugins for fast refresh:
+
+@vitejs/plugin-react
+ (Babel-based)
+
+@vitejs/plugin-react-swc
+ (SWC-based)
